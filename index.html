@@ -3941,6 +3941,76 @@ select{
 })();
 </script>
 
+
+<script>
+(function(){
+  const PREVIEW_LIMIT_SECONDS_IOS = 71;
+
+  function formatIOSPreviewTime(seconds){
+    seconds = Math.max(0, Math.min(PREVIEW_LIMIT_SECONDS_IOS, seconds || 0));
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return m + ':' + String(s).padStart(2, '0');
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const audio = document.getElementById('nowPlayingAudio');
+    const nowBtn = document.getElementById('nowPlayBtn');
+    const nowTime = document.getElementById('nowPlayingTime');
+    if(!audio) return;
+
+    function activeButtons(){
+      return document.querySelectorAll('.track-play-btn.active, .latest-preview-btn.active');
+    }
+
+    function sourceValue(){
+      const source = audio.querySelector('source');
+      return source ? source.getAttribute('src') : '';
+    }
+
+    function syncPlayerUI(){
+      if(nowBtn) nowBtn.textContent = audio.paused ? '▶' : 'Ⅱ';
+      if(nowTime) nowTime.textContent = formatIOSPreviewTime(audio.currentTime) + ' / 1:11';
+      if(audio.paused){
+        activeButtons().forEach(function(btn){ btn.classList.remove('active'); });
+      }
+    }
+
+    function repairAudioAfterWake(){
+      if(!sourceValue()) return;
+      if(audio.currentTime >= PREVIEW_LIMIT_SECONDS_IOS){
+        audio.currentTime = PREVIEW_LIMIT_SECONDS_IOS;
+      }
+      if(audio.error || audio.readyState === 0){
+        try{ audio.load(); }catch(error){}
+      }
+      syncPlayerUI();
+    }
+
+    document.addEventListener('visibilitychange', function(){
+      if(document.hidden){
+        audio.dataset.iosWasPlaying = audio.paused ? '0' : '1';
+        syncPlayerUI();
+      }else{
+        window.setTimeout(repairAudioAfterWake, 120);
+      }
+    });
+
+    window.addEventListener('pagehide', function(){
+      audio.dataset.iosWasPlaying = audio.paused ? '0' : '1';
+      syncPlayerUI();
+    });
+
+    window.addEventListener('pageshow', repairAudioAfterWake);
+    window.addEventListener('focus', repairAudioAfterWake);
+
+    ['pause','play','ended','stalled','suspend','abort','error','loadedmetadata','timeupdate'].forEach(function(eventName){
+      audio.addEventListener(eventName, syncPlayerUI);
+    });
+  });
+})();
+</script>
+
 <script>
 (function(){
   document.addEventListener('DOMContentLoaded', function(){
