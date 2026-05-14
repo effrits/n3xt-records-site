@@ -5,406 +5,3889 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>N3XT — Premier Label Indépendant Music AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --black:#050505;
-  --panel:#101111;
-  --panel-2:#171818;
-  --white:#f0ede6;
-  --muted:rgba(240,237,230,.58);
-  --soft:rgba(240,237,230,.12);
-  --acid:#c8f400;
-  --electric:#00f0ff;
-  --red:#ff2d55;
-  --max:1180px;
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #050505;
+    --white: #F0EDE6;
+    --acid: #C8F400;
+    --electric: #00F0FF;
+    --red: #FF2D55;
+    --mid: #1A1A1A;
+    --border: rgba(240,237,230,0.08);
+    --nav-height: 104px;
+  }
+
+  html { scroll-behavior: smooth; background: #050505; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: auto;
+  }
+  @media (pointer: fine) { body { cursor: none; } }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--acid);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, background 0.2s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid var(--acid);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
+    mix-blend-mode: difference;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("assets/images/891b1e15b4ec667c.svg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 48px;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    background: rgba(5,5,5,0.7);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.12em;
+    color: var(--acid);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(240,237,230,0.5);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--acid); }
+
+  .nav-cta {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border: 1px solid var(--acid);
+    color: var(--acid);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .nav-cta:hover {
+    background: var(--acid);
+    color: var(--black);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: calc(100vh + var(--nav-height));
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding: var(--nav-height) 48px 64px;
+    position: relative;
+    overflow: hidden;
+    background: var(--black);
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(5,5,5,0.45);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 32px;
+    padding-bottom: 48px;
+    position: relative;
+    z-index: 3;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--electric);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s forwards;
+    text-shadow: 0 2px 16px rgba(5,5,5,0.9);
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 16vw, 16rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.5s forwards;
+    text-shadow:
+      0 0 30px rgba(200,244,0,0.35),
+      0 0 70px rgba(200,244,0,0.15),
+      0 0 120px rgba(200,244,0,0.08),
+      0 4px 24px rgba(5,5,5,0.95);
+  }
+
+  .hero-title .accent { color: var(--acid); }
+
+  .hero-title::after {
+    content: 'N3XT';
+    position: absolute;
+    top: 6px; left: 6px;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(200,244,0,0.2);
+    pointer-events: none;
+    text-shadow: 0 0 40px rgba(200,244,0,0.2), 0 0 90px rgba(200,244,0,0.1);
+  }
+
+  .hero-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-weight: 300;
+    color: rgba(240,237,230,0.85);
+    max-width: 520px;
+    margin-top: 32px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.7s forwards;
+    text-shadow: 0 2px 20px rgba(5,5,5,0.9);
+  }
+
+  .hero-sub em {
+    font-style: normal;
+    color: var(--acid);
+    font-weight: 500;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 48px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.9s forwards;
+  }
+
+  .btn-primary {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 18px 36px;
+    background: var(--acid);
+    color: var(--black);
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: white;
+    transform: translateX(-101%);
+    transition: transform 0.3s;
+  }
+
+  .btn-primary:hover::after { transform: translateX(0); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-secondary {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 18px 36px;
+    border: 1px solid rgba(240,237,230,0.2);
+    color: var(--white);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--white);
+    background: rgba(240,237,230,0.05);
+  }
+
+  /* HERO BG VISUAL */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .waveform {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
+    opacity: 0.06;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    animation: pulse 8s ease-in-out infinite;
+  }
+
+  .orb-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--acid) 0%, transparent 70%);
+    top: -200px; right: -100px;
+    opacity: 0.04;
+    animation-delay: 0s;
+  }
+
+  .orb-2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--electric) 0%, transparent 70%);
+    bottom: 100px; left: 30%;
+    opacity: 0.03;
+    animation-delay: 3s;
+  }
+
+  .hero-counter {
+    position: absolute;
+    right: 48px;
+    bottom: 64px;
+    text-align: right;
+    z-index: 2;
+    opacity: 0;
+    animation: fadeUp 0.9s 1.1s forwards;
+  }
+
+  .counter-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    color: var(--acid);
+    line-height: 1;
+  }
+
+  .counter-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(240,237,230,0.3);
+    margin-top: 4px;
+  }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 64px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 2;
+    opacity: 0;
+    animation: fadeUp 1s 1.3s forwards;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--acid), transparent);
+    animation: scrollAnim 2s ease-in-out infinite;
+  }
+
+  .scroll-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(240,237,230,0.3);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+
+  /* TICKER */
+  .ticker-wrap {
+    background: var(--acid);
+    overflow: hidden;
+    padding: 14px 0;
+    position: relative;
+  }
+
+  .ticker {
+    display: flex;
+    gap: 0;
+    animation: ticker 25s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    color: var(--black);
+    padding: 0 40px;
+    flex-shrink: 0;
+  }
+
+  .ticker-sep {
+    color: rgba(0,0,0,0.3);
+    padding: 0 8px;
+  }
+
+  /* SECTION BASE */
+  section {
+    position: relative;
+    z-index: 2;
+  }
+
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--electric);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-tag::before {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: var(--electric);
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+  }
+
+  /* PILLARS */
+  .pillars {
+    padding: 100px 48px 60px;
+    background: var(--black);
+  }
+
+  .pillars-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-bottom: 80px;
+    align-items: end;
+  }
+
+  .pillars-desc {
+    font-size: 1.05rem;
+    color: rgba(240,237,230,0.5);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .pillar-card {
+    background: var(--black);
+    padding: 56px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+  }
+
+  .pillar-card:hover {
+    background: var(--mid);
+  }
+
+  .pillar-card:hover .pillar-num { color: var(--acid); }
+
+  .pillar-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    color: rgba(240,237,230,0.22);
+    line-height: 1;
+    margin-bottom: 32px;
+    transition: color 0.4s;
+  }
+
+  .pillar-icon {
+    font-size: 2rem;
+    margin-bottom: 24px;
+  }
+
+  .pillar-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+
+  .pillar-text {
+    font-size: 0.9rem;
+    color: rgba(240,237,230,0.45);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .pillar-tag {
+    display: inline-block;
+    margin-top: 28px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    color: rgba(240,237,230,0.3);
+  }
+
+  .pillar-card:hover .pillar-tag {
+    border-color: var(--acid);
+    color: var(--acid);
+  }
+
+  /* MANIFESTO */
+  .manifesto {
+    padding: 140px 48px;
+    background: var(--mid);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .manifesto::before {
+    content: 'N3XT';
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40vw;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(240,237,230,0.03);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .manifesto-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .manifesto-quote {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 4.5vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    margin: 48px 0;
+  }
+
+  .manifesto-quote .line-acid { color: var(--acid); }
+  .manifesto-quote .line-elec { color: var(--electric); }
+
+  .manifesto-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-top: 64px;
+    padding-top: 64px;
+    border-top: 1px solid var(--border);
+    font-size: 0.95rem;
+    color: rgba(240,237,230,0.45);
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  /* ARTISTS SECTION */
+  .artists {
+    padding: 60px 48px 120px;
+    background: var(--black);
+  }
+
+  .artists-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 64px;
+  }
+
+  .artists-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .artist-card {
+    background: var(--mid);
+    aspect-ratio: 3/4;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .artist-visual {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    opacity: 0.15;
+    transition: opacity 0.3s, transform 0.4s;
+  }
+
+  .artist-card:hover .artist-visual {
+    opacity: 0.25;
+    transform: scale(1.1);
+  }
+
+  .artist-bg {
+    position: absolute;
+    inset: 0;
+    transition: opacity 0.4s;
+  }
+
+  .artist-card:nth-child(1) .artist-bg { background: linear-gradient(135deg, #1a1a1a 0%, #0d200d 100%); }
+  .artist-card:nth-child(2) .artist-bg { background: linear-gradient(135deg, #1a1a1a 0%, #0d1a20 100%); }
+  .artist-card:nth-child(3) .artist-bg { background: linear-gradient(135deg, #1a1a1a 0%, #20100d 100%); }
+  .artist-card:nth-child(4) .artist-bg { background: linear-gradient(135deg, #1a1a1a 0%, #191a0d 100%); }
+
+  .artist-info {
+    padding: 24px;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    background: linear-gradient(to top, rgba(5,5,5,0.9) 0%, transparent 100%);
+    padding-top: 64px;
+  }
+
+  .artist-type {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--acid);
+    margin-bottom: 6px;
+  }
+
+  .artist-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+  }
+
+  .artist-status {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: rgba(240,237,230,0.3);
+    margin-top: 6px;
+  }
+
+  .artist-plus {
+    background: var(--mid);
+    aspect-ratio: 3/4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    cursor: pointer;
+    border: 1px dashed rgba(240,237,230,0.1);
+    transition: border-color 0.3s;
+  }
+
+  .artist-plus:hover { border-color: var(--acid); }
+
+  .artist-plus-icon {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: rgba(240,237,230,0.15);
+    line-height: 1;
+  }
+
+  .artist-plus span {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(240,237,230,0.25);
+  }
+
+  .artist-plus:hover .artist-plus-icon,
+  .artist-plus:hover span { color: var(--acid); }
+
+  /* DROITS */
+  .droits {
+    padding: 120px 48px;
+    background: var(--acid);
+    color: var(--black);
+  }
+
+  .droits .section-tag { color: rgba(0,0,0,0.4); }
+  .droits .section-tag::before { background: rgba(0,0,0,0.4); }
+
+  .droits-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .droits-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 6rem);
+    line-height: 0.9;
+    color: var(--black);
+  }
+
+  .droits-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .droits-item {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.12);
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .droits-item-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: rgba(0,0,0,0.35);
+    flex-shrink: 0;
+    padding-top: 4px;
+  }
+
+  .droits-item-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--black);
+    margin-bottom: 4px;
+  }
+
+  .droits-item-text {
+    font-size: 0.85rem;
+    color: rgba(0,0,0,0.55);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* SUBMIT */
+  .submit {
+    padding: 140px 48px;
+    background: var(--black);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(200,244,0,0.06) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    pointer-events: none;
+  }
+
+  .submit-inner { position: relative; z-index: 2; }
+
+  .submit-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 7vw, 7rem);
+    line-height: 0.9;
+    max-width: 800px;
+    margin: 0 auto 24px;
+  }
+
+  .submit-title .acid { color: var(--acid); }
+
+  .submit-desc {
+    color: rgba(240,237,230,0.4);
+    font-size: 1rem;
+    font-weight: 300;
+    margin-bottom: 56px;
+    line-height: 1.7;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .submit-form {
+    display: flex;
+    gap: 0;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .submit-input {
+    flex: 1;
+    background: var(--mid);
+    border: 1px solid var(--border);
+    border-right: none;
+    padding: 16px 20px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .submit-input:focus { border-color: var(--acid); }
+  .submit-input::placeholder { color: rgba(240,237,230,0.2); }
+
+  .submit-btn {
+    background: var(--acid);
+    color: var(--black);
+    border: none;
+    padding: 16px 28px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .submit-btn:hover { background: white; }
+
+  /* FOOTER */
+  footer {
+    padding: 64px 48px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 48px;
+    align-items: end;
+    background: var(--black);
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--acid);
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .footer-tagline {
+    font-size: 0.8rem;
+    color: rgba(240,237,230,0.25);
+    font-weight: 300;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(240,237,230,0.35);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--acid); }
+
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: rgba(240,237,230,0.15);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: inherit; }
+    50% { transform: scale(1.1); opacity: 0.08; }
+  }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes scrollAnim {
+    0%, 100% { scaleY: 1; opacity: 1; }
+    50% { transform: scaleY(0.6); opacity: 0.4; }
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.23,1,0.32,1), transform 0.8s cubic-bezier(0.23,1,0.32,1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    :root { --nav-height: 86px; }
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .nav-cta { display: none; }
+    .hero, .pillars, .manifesto, .artists, .droits, .submit { padding-left: 24px; padding-right: 24px; }
+    .hero { padding-top: var(--nav-height); min-height: calc(100vh + var(--nav-height)); }
+    .hero-content { justify-content: center; padding-top: 20px; }
+    .pillars-header, .droits-inner, .manifesto-body { grid-template-columns: 1fr; gap: 32px; }
+    .pillars-grid { grid-template-columns: 1fr; }
+    .artists-grid { grid-template-columns: 1fr 1fr; }
+    footer { grid-template-columns: 1fr; gap: 32px; }
+    .footer-copy { text-align: left; }
+    .hero-counter { display: none; }
+    .burger { display: flex; }
+  }
+
+  /* BURGER */
+  .burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 9500;
+    position: relative;
+  }
+  .burger span {
+    display: block;
+    width: 26px;
+    height: 2px;
+    background: var(--acid);
+    transition: all 0.3s;
+    border-radius: 2px;
+  }
+  .burger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .burger.open span:nth-child(2) { opacity: 0; }
+  .burger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  /* MENU MOBILE */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(5,5,5,0.98);
+    z-index: 9100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu ul { list-style: none; text-align: center; }
+  .mobile-menu li { margin-bottom: 36px; }
+  .mobile-menu a {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.6rem;
+    letter-spacing: 0.08em;
+    color: rgba(240,237,230,0.5);
+    text-decoration: none;
+    transition: color 0.2s;
+    display: block;
+  }
+  .mobile-menu a:hover { color: var(--acid); }
+  .mobile-menu .mobile-cta {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--acid);
+    padding: 16px 32px;
+  }
+
+  /* MODAL GÉNÉRIQUE */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 9000;
+    background: rgba(5,5,5,0.97);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .modal.open { display: flex; align-items: flex-start; justify-content: center; }
+  .modal-inner {
+    background: #0d0d0d;
+    border: 1px solid rgba(200,244,0,0.15);
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    min-height: 100%;
+  }
+  .modal-header {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(240,237,230,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: sticky;
+    top: 0;
+    background: #0d0d0d;
+    z-index: 2;
+  }
+  .modal-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--electric);
+    margin-bottom: 8px;
+  }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--white);
+    letter-spacing: 0.05em;
+  }
+  .modal-close {
+    background: none;
+    border: 1px solid rgba(240,237,230,0.15);
+    color: rgba(240,237,230,0.5);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .modal-close:hover { border-color: var(--acid); color: var(--acid); }
+  .modal-body {
+    padding: 28px 24px 56px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: rgba(240,237,230,0.55);
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+
+/* ===== N3XT V2 ENHANCEMENTS ===== */
+
+.interlude-banner{
+  padding:90px 24px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  background:#050505;
+  border-top:1px solid rgba(240,237,230,0.04);
+  border-bottom:1px solid rgba(240,237,230,0.04);
 }
-*{box-sizing:border-box}
-html{background:var(--black);scroll-behavior:smooth}
-body{margin:0;background:var(--black);color:var(--white);font-family:"DM Sans",Arial,sans-serif;overflow-x:hidden}
-body.modal-open{overflow:hidden}
-button,a,input{font:inherit}
-button{color:inherit}
-a{color:inherit;text-decoration:none}
-.cursor,.cursor-ring{position:fixed;pointer-events:none;z-index:9999;border-radius:50%;display:none}
-@media (pointer:fine){
-  body{cursor:none}
-  .cursor{display:block;width:12px;height:12px;background:var(--acid);mix-blend-mode:difference}
-  .cursor-ring{display:block;width:38px;height:38px;border:1px solid var(--acid);mix-blend-mode:difference;transition:transform .12s ease}
+
+.interlude-banner::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at center, rgba(200,244,0,0.05) 0%, transparent 60%);
+  pointer-events:none;
 }
-.site-nav{position:sticky;top:0;z-index:50;height:78px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,48px);border-bottom:1px solid var(--soft);background:rgba(5,5,5,.86);backdrop-filter:blur(12px)}
-.logo{font-family:"Bebas Neue";font-size:2rem;letter-spacing:.14em;color:var(--acid)}
-.nav-links{display:flex;gap:28px;font-family:"Space Mono";font-size:.68rem;text-transform:uppercase;letter-spacing:.18em;color:rgba(240,237,230,.56)}
-.nav-cta{border:1px solid var(--acid);padding:10px 16px;font-family:"Space Mono";font-size:.68rem;text-transform:uppercase;letter-spacing:.13em;color:var(--acid)}
-.hero{min-height:calc(100svh - 78px);padding:72px clamp(18px,4vw,48px) 42px;position:relative;overflow:hidden}
-.hero::before{content:"";position:absolute;inset:-25%;background:radial-gradient(circle at 76% 18%,rgba(200,244,0,.13),transparent 30%),radial-gradient(circle at 18% 70%,rgba(0,240,255,.08),transparent 32%);pointer-events:none}
-.hero-inner{max-width:var(--max);margin:auto;position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,430px);gap:52px;align-items:center}
-.eyebrow{font-family:"Space Mono";font-size:.68rem;text-transform:uppercase;letter-spacing:.26em;color:var(--electric);margin:0 0 18px}
-h1{font-family:"Bebas Neue";font-size:clamp(6rem,17vw,15rem);line-height:.82;margin:0;color:var(--white);text-shadow:0 0 40px rgba(200,244,0,.22)}
-h1 span{color:var(--acid)}
-.hero-copy{max-width:560px;color:var(--muted);font-size:clamp(1rem,2vw,1.22rem);line-height:1.65;margin:28px 0 0}
-.actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}
-.btn-primary,.btn-secondary{min-height:48px;display:inline-flex;align-items:center;justify-content:center;padding:0 22px;font-family:"Space Mono";font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;border:1px solid var(--soft)}
-.btn-primary{background:var(--acid);color:#050505;border-color:var(--acid);font-weight:700}
-.btn-secondary{color:var(--white)}
-.latest-card{background:linear-gradient(180deg,rgba(23,24,24,.86),rgba(10,10,10,.94));border:1px solid var(--soft);padding:16px}
-.latest-cover{width:100%;aspect-ratio:1;object-fit:cover;background:#050505;border:1px solid rgba(240,237,230,.08);display:block}
-.latest-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:16px 0 12px}
-.latest-head h2{font-family:"Bebas Neue";font-size:2.15rem;line-height:1;margin:0}
-.latest-head button{background:none;border:1px solid var(--acid);color:var(--acid);padding:9px 12px;font-family:"Space Mono";font-size:.64rem;text-transform:uppercase;letter-spacing:.12em;cursor:pointer}
-.mini-track{width:100%;display:grid;grid-template-columns:38px 1fr 44px;align-items:center;gap:10px;text-align:left;background:transparent;color:var(--white);border:0;border-top:1px solid rgba(240,237,230,.09);padding:12px 0;cursor:pointer}
-.mini-track span,.mini-track em{font-family:"Space Mono";font-style:normal;font-size:.72rem;color:rgba(240,237,230,.4)}
-.mini-track strong{font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mini-track:hover strong{color:var(--acid)}
-.band{border-top:1px solid var(--soft);padding:88px clamp(18px,4vw,48px)}
-.section-inner{max-width:var(--max);margin:auto}
-.section-title{font-family:"Bebas Neue";font-size:clamp(2.8rem,7vw,5.6rem);line-height:.92;margin:0 0 18px}
-.section-text{max-width:780px;color:var(--muted);line-height:1.7;font-size:1.04rem}
-.pillars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--soft);border:1px solid var(--soft);margin-top:48px}
-.pillar{background:#070707;padding:34px;min-height:210px}
-.pillar b{display:block;font-family:"Bebas Neue";font-size:3rem;color:rgba(240,237,230,.18);margin-bottom:20px}
-.pillar h3{font-family:"Bebas Neue";font-size:1.65rem;margin:0 0 12px}
-.pillar p{margin:0;color:var(--muted);line-height:1.62}
-.artists-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:42px}
-.artist-card{position:relative;min-height:300px;overflow:hidden;text-align:left;padding:24px;background:var(--panel);border:1px solid var(--soft);cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end}
-.artist-card-glow{position:absolute;inset:auto -20% -28% -20%;height:70%;background:radial-gradient(circle,rgba(200,244,0,.16),transparent 60%);opacity:.8}
-.artist-card-type{position:relative;font-family:"Space Mono";font-size:.62rem;text-transform:uppercase;letter-spacing:.18em;color:var(--acid);margin-bottom:8px}
-.artist-card strong{position:relative;font-family:"Bebas Neue";font-size:2.45rem;letter-spacing:.04em}
-.artist-card small{position:relative;color:rgba(240,237,230,.42);font-family:"Space Mono";font-size:.65rem;text-transform:uppercase;letter-spacing:.12em}
-.artist-card.add{border-style:dashed;align-items:center;text-align:center;justify-content:center;color:rgba(240,237,230,.42)}
-.submit-band{background:var(--acid);color:#050505}
-.submit-band .section-text{color:rgba(0,0,0,.62)}
-.submit-form{display:flex;max-width:520px;margin-top:28px}
-.submit-form input{flex:1;min-width:0;padding:16px;border:1px solid rgba(0,0,0,.2);background:rgba(255,255,255,.38);font-size:16px}
-.submit-form button{padding:0 22px;border:1px solid #050505;background:#050505;color:var(--acid);font-family:"Space Mono";text-transform:uppercase;font-size:.7rem;letter-spacing:.13em}
-.player{position:fixed;left:0;right:0;bottom:0;z-index:80;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:12px max(16px,env(safe-area-inset-left)) calc(12px + env(safe-area-inset-bottom));background:rgba(5,5,5,.94);border-top:1px solid var(--soft);backdrop-filter:blur(14px)}
-.player button{width:42px;height:42px;border-radius:50%;border:1px solid var(--acid);background:var(--acid);color:#050505;font-weight:700;cursor:pointer}
-.player-title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.player-meta{color:rgba(240,237,230,.45);font-family:"Space Mono";font-size:.68rem;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.progress{height:4px;background:rgba(240,237,230,.12);margin-top:9px;overflow:hidden}
-.progress span{display:block;height:100%;width:0;background:var(--acid)}
-.time{font-family:"Space Mono";font-size:.72rem;color:rgba(240,237,230,.54);min-width:84px;text-align:right}
-.artist-modal{position:fixed;inset:0;z-index:70;background:rgba(5,5,5,.96);display:none;overflow:auto;padding:96px clamp(18px,4vw,48px) 110px}
-.artist-modal.open{display:block}
-.modal-close{position:fixed;top:22px;right:clamp(18px,4vw,48px);z-index:5;border:1px solid var(--soft);background:rgba(5,5,5,.8);color:var(--white);padding:12px 16px;cursor:pointer}
-.artist-layout{max-width:var(--max);margin:auto;display:grid;grid-template-columns:minmax(280px,430px) 1fr;gap:46px;align-items:start}
-.artist-side{position:sticky;top:102px}
-.artist-cover{width:100%;aspect-ratio:1;object-fit:cover;background:#050505;border:1px solid var(--soft);box-shadow:0 30px 80px rgba(0,0,0,.42)}
-.artist-info{position:relative;min-height:440px}
-.spectrum{position:sticky;top:102px;height:210px;margin-bottom:-150px;display:flex;align-items:end;gap:5px;opacity:.36;pointer-events:none;filter:drop-shadow(0 0 12px rgba(255,45,85,.25))}
-.spectrum span{flex:1;min-width:3px;height:var(--h1);background:linear-gradient(to top,rgba(255,45,85,.3),rgba(200,244,0,.9));animation:sbar 1.7s ease-in-out infinite;animation-delay:calc(var(--i) * -70ms)}
-@keyframes sbar{50%{height:var(--h2);opacity:.78}}
-@media (prefers-reduced-motion:reduce){.spectrum span,.orb,.ticker{animation:none!important}}
-.artist-info h2{position:relative;font-family:"Bebas Neue";font-size:clamp(4rem,10vw,9rem);line-height:.82;margin:0;color:var(--white);text-shadow:0 0 36px rgba(200,244,0,.2)}
-.artist-sub{position:relative;color:var(--acid);font-family:"Space Mono";font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;margin:18px 0 20px}
-.artist-desc{position:relative;color:var(--muted);line-height:1.7;max-width:680px}
-.meta-grid{position:relative;display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--soft);border:1px solid var(--soft);margin:30px 0}
-.meta-item{background:rgba(8,8,8,.86);padding:18px}
-.meta-item span{display:block;font-family:"Space Mono";font-size:.6rem;text-transform:uppercase;letter-spacing:.16em;color:rgba(240,237,230,.35);margin-bottom:8px}
-.tracklist{position:relative;border-top:1px solid var(--soft)}
-.track-row{width:100%;display:grid;grid-template-columns:42px 42px 1fr 54px;gap:12px;align-items:center;text-align:left;border:0;border-bottom:1px solid var(--soft);background:rgba(5,5,5,.42);color:var(--white);padding:13px 0;cursor:pointer}
-.track-row:hover .track-name{color:var(--acid)}
-.track-row .num,.track-row .dur{font-family:"Space Mono";font-size:.7rem;color:rgba(240,237,230,.42)}
-.track-row .play{width:32px;height:32px;border-radius:50%;border:1px solid rgba(240,237,230,.18);display:grid;place-items:center;color:var(--acid);font-size:.75rem}
-.track-name{font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-footer{padding:46px clamp(18px,4vw,48px) 120px;color:rgba(240,237,230,.36);font-family:"Space Mono";font-size:.7rem;border-top:1px solid var(--soft)}
+
+.interlude-text{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,10vw,8rem);
+  line-height:0.9;
+  letter-spacing:0.08em;
+  color:rgba(240,237,230,0.08);
+  position:relative;
+  z-index:2;
+}
+
+.interlude-text span{
+  color:#C8F400;
+  text-shadow:0 0 25px rgba(200,244,0,0.25);
+}
+
+.latest-release{
+  padding:100px 48px;
+  background:#0a0a0a;
+  border-top:1px solid rgba(240,237,230,0.05);
+  border-bottom:1px solid rgba(240,237,230,0.05);
+}
+
+.release-card{
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:40px;
+  align-items:center;
+}
+
+.release-card[data-artist-target]{
+  cursor:pointer;
+}
+
+.release-card[data-artist-target]:focus-visible{
+  outline:1px solid var(--acid);
+  outline-offset:10px;
+}
+
+.release-cover{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  filter:none;
+  border:1px solid rgba(240,237,230,0.08);
+  box-shadow:0 0 80px rgba(200,244,0,0.06);
+}
+
+.release-meta{
+  font-family:'Space Mono',monospace;
+  font-size:0.7rem;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:rgba(240,237,230,0.35);
+  margin-bottom:12px;
+}
+
+.release-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,7vw,6rem);
+  line-height:0.9;
+  margin-bottom:20px;
+}
+
+.release-desc{
+  color:rgba(240,237,230,0.45);
+  max-width:520px;
+  line-height:1.8;
+  margin-bottom:28px;
+}
+
+
+
+.now-playing{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  z-index:9999;
+  background:rgba(5,5,5,0.92);
+  border:1px solid rgba(200,244,0,0.15);
+  backdrop-filter:blur(10px);
+  padding:14px 18px;
+  min-width:240px;
+  box-shadow:0 0 30px rgba(0,0,0,0.4);
+}
+
+.now-playing-label{
+  font-family:'Space Mono',monospace;
+  font-size:0.55rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:rgba(200,244,0,0.5);
+  margin-bottom:8px;
+}
+
+.waveform{
+  display:flex;
+  align-items:flex-end;
+  gap:3px;
+  height:28px;
+  margin-top:10px;
+}
+
+.waveform span{
+  width:3px;
+  background:#C8F400;
+  border-radius:10px;
+  animation:wave 1.2s ease-in-out infinite;
+}
+
+.waveform span:nth-child(2){animation-delay:0.1s;}
+.waveform span:nth-child(3){animation-delay:0.2s;}
+.waveform span:nth-child(4){animation-delay:0.3s;}
+.waveform span:nth-child(5){animation-delay:0.4s;}
+.waveform span:nth-child(6){animation-delay:0.5s;}
+
+@keyframes wave{
+  0%,100%{height:8px;opacity:0.4;}
+  50%{height:28px;opacity:1;}
+}
+
+.texture-overlay{
+  position:absolute;
+  inset:0;
+  opacity:0.025;
+  background-image:
+  linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size:80px 80px;
+  pointer-events:none;
+}
+
+.artist-card{
+  transition:transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.artist-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+
 @media(max-width:900px){
-  .site-nav{height:68px}.nav-links,.nav-cta{display:none}
-  .hero{padding-top:50px}.hero-inner{grid-template-columns:1fr}
-  .latest-card{max-width:460px}
-  .pillars-grid,.artists-grid{grid-template-columns:1fr}
-  .artist-modal{padding-top:78px}
-  .artist-layout{grid-template-columns:1fr;gap:24px}
-  .artist-side{position:relative;top:auto;max-width:360px}
-  .spectrum{position:fixed;left:18px;right:18px;top:96px;height:150px;opacity:.22}
-  .meta-grid{grid-template-columns:1fr}
-  .player{grid-template-columns:auto 1fr;gap:10px}.time{grid-column:2;text-align:left}
+  .release-card{
+    grid-template-columns:1fr;
+  }
 }
+
+
+/* ===== ARTIST PROFILE PAGE / MODAL ===== */
+.artist-card-clickable::after{
+  content:'OPEN ARTIST PAGE';
+  position:absolute;
+  top:18px;
+  right:18px;
+  z-index:5;
+  font-family:'Space Mono',monospace;
+  font-size:0.52rem;
+  letter-spacing:0.18em;
+  color:#050505;
+  background:#C8F400;
+  padding:7px 9px;
+  opacity:0;
+  transform:translateY(-6px);
+  transition:all .25s ease;
+}
+.artist-card-clickable:hover::after{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.artist-page-modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:9800;
+  background:rgba(5,5,5,0.98);
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.artist-page-modal.open{display:block;}
+.artist-page-inner{
+  min-height:100vh;
+  padding:110px 48px 80px;
+  position:relative;
+}
+.artist-page-close{
+  position:fixed;
+  top:26px;
+  right:32px;
+  z-index:9900;
+  background:transparent;
+  border:1px solid rgba(200,244,0,.25);
+  color:#C8F400;
+  font-family:'Space Mono',monospace;
+  font-size:.65rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  padding:12px 18px;
+  cursor:pointer;
+}
+.artist-profile-grid{
+  display:grid;
+  grid-template-columns:minmax(280px,430px) 1fr;
+  gap:64px;
+  max-width:1180px;
+  margin:0 auto;
+  align-items:start;
+}
+.artist-profile-cover{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  filter:grayscale(100%) contrast(1.08);
+  border:1px solid rgba(240,237,230,.08);
+  box-shadow:0 30px 100px rgba(0,0,0,.65), 0 0 80px rgba(200,244,0,.08);
+}
+.artist-profile-tag{
+  font-family:'Space Mono',monospace;
+  font-size:.62rem;
+  letter-spacing:.35em;
+  color:#00F0FF;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+.artist-profile-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(4rem,12vw,10rem);
+  line-height:.82;
+  letter-spacing:.03em;
+  color:#F0EDE6;
+  margin-bottom:18px;
+}
+.artist-profile-sub{
+  font-family:'Space Mono',monospace;
+  font-size:.72rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(240,237,230,.35);
+  margin-bottom:28px;
+}
+.artist-profile-desc{
+  max-width:620px;
+  color:rgba(240,237,230,.48);
+  line-height:1.85;
+  font-size:.96rem;
+  margin-bottom:34px;
+}
+.artist-meta-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1px;
+  background:rgba(240,237,230,.07);
+  margin:28px 0 34px;
+  max-width:680px;
+}
+.artist-meta-item{
+  background:#0d0d0d;
+  padding:18px;
+}
+.artist-meta-label{
+  font-family:'Space Mono',monospace;
+  font-size:.55rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(200,244,0,.45);
+  margin-bottom:8px;
+}
+.artist-meta-value{
+  color:#F0EDE6;
+  font-size:.92rem;
+}
+.big-player{
+  max-width:680px;
+  background:#101010;
+  border:1px solid rgba(200,244,0,.14);
+  padding:22px;
+  box-shadow:0 20px 80px rgba(0,0,0,.45);
+}
+.big-player audio{
+  width:100%;
+  filter:invert(1) grayscale(1);
+}
+.player-controls-extra{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:18px;
+}
+.player-toggle{
+  border:1px solid rgba(240,237,230,.12);
+  background:#050505;
+  color:rgba(240,237,230,.55);
+  font-family:'Space Mono',monospace;
+  font-size:.58rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  padding:10px 12px;
+  cursor:pointer;
+  transition:all .2s;
+}
+.player-toggle.active,
+.player-toggle:hover{
+  border-color:#C8F400;
+  color:#050505;
+  background:#C8F400;
+}
+.artist-reactions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:22px;
+}
+.react-btn{
+  width:44px;
+  height:44px;
+  border:1px solid rgba(240,237,230,.12);
+  background:#050505;
+  color:#F0EDE6;
+  cursor:pointer;
+  font-size:1.2rem;
+  transition:all .2s;
+}
+.react-btn:hover,
+.react-btn.active{
+  border-color:#C8F400;
+  color:#C8F400;
+  transform:translateY(-2px);
+}
+.react-btn.heart.active{color:#FF2D55;border-color:#FF2D55;}
+.tracklist{
+  margin-top:30px;
+  max-width:680px;
+  border-top:1px solid rgba(240,237,230,.06);
+}
+.track-row{
+  display:grid;
+  grid-template-columns:44px 1fr auto;
+  gap:18px;
+  align-items:center;
+  padding:16px 0;
+  border-bottom:1px solid rgba(240,237,230,.06);
+}
+.track-num{
+  font-family:'Space Mono',monospace;
+  color:rgba(240,237,230,.25);
+  font-size:.65rem;
+}
+.track-title{
+  color:#F0EDE6;
+}
+.track-duration{
+  font-family:'Space Mono',monospace;
+  color:rgba(240,237,230,.3);
+  font-size:.65rem;
+}
+@media(max-width:900px){
+  .artist-page-inner{padding:90px 24px 60px;}
+  .artist-profile-grid{grid-template-columns:1fr;gap:36px;}
+  .artist-meta-grid{grid-template-columns:1fr;}
+  .artist-page-close{top:18px;right:18px;}
+}
+
+
+.preview-btn{
+  border:1px solid rgba(200,244,0,.28);
+  background:transparent;
+  color:#C8F400;
+  font-family:'Space Mono',monospace;
+  font-size:.58rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  padding:9px 12px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.preview-btn:hover,
+.preview-btn.active{
+  background:#C8F400;
+  color:#050505;
+}
+
+
+/* ===== NOW PLAYING CURSOR FIX ===== */
+.now-playing,
+.now-playing *{
+  cursor:auto !important;
+}
+
+#nowPlayingAudio{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
+#nowPlayBtn{
+  cursor:pointer !important;
+}
+
+
+/* ===== CUSTOM CURSOR ALWAYS ON TOP FIX ===== */
+.cursor{
+  z-index: 2147483647 !important;
+  display:block !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:none !important;
+}
+
+.cursor-ring{
+  z-index: 2147483646 !important;
+  display:block !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:none !important;
+}
+
+.artist-page-modal,
+.now-playing{
+  cursor:none !important;
+}
+
+.artist-page-modal *,
+.now-playing *{
+  cursor:none !important;
+}
+
+
+/* ===== HOVER PLAY TRACKLIST ===== */
+.hover-play{
+  position:relative;
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.track-number{
+  transition:opacity .18s ease;
+}
+
+.track-play-btn{
+  position:absolute;
+  inset:0;
+  width:44px;
+  height:44px;
+  border:none;
+  background:none;
+  color:#7CFC00;
+  font-size:1.25rem;
+  cursor:pointer;
+  opacity:0;
+  transition:opacity .18s ease, transform .18s ease;
+}
+
+.hover-play:hover .track-number{
+  opacity:0;
+}
+
+.hover-play:hover .track-play-btn{
+  opacity:1;
+  transform:scale(1.05);
+}
+
+
+.latest-preview-btn{
+  border:1px solid rgba(200,244,0,.28);
+  background:transparent;
+  color:#C8F400;
+  font-family:'Space Mono',monospace;
+  font-size:.62rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  padding:10px 14px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.latest-preview-btn:hover,
+.latest-preview-btn.active{
+  background:#C8F400;
+  color:#050505;
+}
+
+
+/* ===== BETTY PROFILE IMAGE FIX ===== */
+.betty-profile-cover{object-fit:contain !important;filter:none !important;background:#050505;}
+
+
+/* ===== PREMIUM 03 — 3D / DYNAMIC ENHANCEMENTS ===== */
+
+/* 3D artist cards */
+.artists-grid{
+  perspective: 1200px;
+}
+
+.artist-card,
+.artist-plus{
+  transform-style: preserve-3d;
+  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+}
+
+.artist-card:hover,
+.artist-plus:hover{
+  transform: translateY(-8px) rotateX(4deg) rotateY(-4deg);
+  box-shadow: 0 28px 90px rgba(0,0,0,.58), 0 0 40px rgba(200,244,0,.06);
+}
+
+/* 3D profile opening feeling */
+.artist-page-modal.open .artist-profile-cover{
+  animation: profileCoverEnter .7s cubic-bezier(.23,1,.32,1) both;
+}
+
+.artist-page-modal.open .artist-profile-name,
+.artist-page-modal.open .artist-profile-desc,
+.artist-page-modal.open .artist-meta-grid,
+.artist-page-modal.open .tracklist{
+  animation: profileTextEnter .75s cubic-bezier(.23,1,.32,1) both;
+}
+
+@keyframes profileCoverEnter{
+  from{opacity:0; transform: translateY(30px) rotateY(-12deg) scale(.96);}
+  to{opacity:1; transform: translateY(0) rotateY(0) scale(1);}
+}
+
+@keyframes profileTextEnter{
+  from{opacity:0; transform: translateY(26px);}
+  to{opacity:1; transform: translateY(0);}
+}
+
+/* 3D floating release cover */
+.release-cover{
+  transform-style: preserve-3d;
+  animation: coverFloat3D 7s ease-in-out infinite;
+}
+
+@keyframes coverFloat3D{
+  0%,100%{transform: translateY(0) rotateX(0deg) rotateY(0deg);}
+  50%{transform: translateY(-10px) rotateX(2deg) rotateY(-2deg);}
+}
+
+/* 3D depth interlude */
+.depth-interlude{
+  position:relative;
+  overflow:hidden;
+  min-height:260px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#050505;
+  border-top:1px solid rgba(240,237,230,.04);
+  border-bottom:1px solid rgba(240,237,230,.04);
+  perspective:1000px;
+}
+
+.depth-interlude::before{
+  content:'';
+  position:absolute;
+  inset:-20%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(200,244,0,.08), transparent 42%),
+    linear-gradient(90deg, transparent 0 48%, rgba(240,237,230,.05) 49% 51%, transparent 52% 100%);
+  transform: rotateX(65deg) translateY(60px);
+  opacity:.55;
+}
+
+.depth-interlude-title{
+  position:relative;
+  z-index:2;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,9vw,8rem);
+  line-height:.9;
+  letter-spacing:.1em;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(200,244,0,.65);
+  text-shadow:0 0 50px rgba(200,244,0,.12);
+  transform: rotateX(8deg);
+}
+
+/* Now playing 3D upgrade */
+.now-playing{
+  transform-style: preserve-3d;
+  box-shadow: 0 24px 80px rgba(0,0,0,.55), 0 0 30px rgba(200,244,0,.06);
+}
+
+.now-playing:hover{
+  transform: translateY(-2px);
+}
+
+/* subtle 3D scan line */
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:2;
+  background:linear-gradient(to bottom, transparent 0%, rgba(200,244,0,.025) 50%, transparent 100%);
+  opacity:.35;
+  mix-blend-mode:screen;
+}
+
+
+/* ===== ARTIST PAGE SMOOTH IPHONE-LIKE 3D TRANSITION ===== */
+.artist-page-modal{
+  display:block !important;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:scale(.965) translateY(18px);
+  transform-origin:center center;
+  transition:
+    opacity .42s cubic-bezier(.22,1,.36,1),
+    transform .52s cubic-bezier(.22,1,.36,1),
+    visibility 0s linear .52s;
+  will-change:opacity, transform;
+  backdrop-filter:blur(0px);
+}
+
+.artist-page-modal.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:scale(1) translateY(0);
+  transition:
+    opacity .36s cubic-bezier(.22,1,.36,1),
+    transform .54s cubic-bezier(.22,1,.36,1),
+    visibility 0s;
+  backdrop-filter:blur(10px);
+}
+
+.artist-page-inner{
+  transform:translateY(26px) rotateX(5deg) scale(.985);
+  opacity:.2;
+  transition:
+    transform .62s cubic-bezier(.16,1,.3,1),
+    opacity .42s cubic-bezier(.22,1,.36,1);
+  transform-origin:center top;
+  will-change:transform, opacity;
+}
+
+.artist-page-modal.open .artist-page-inner{
+  transform:translateY(0) rotateX(0deg) scale(1);
+  opacity:1;
+}
+
+.artist-page-modal.open .artist-profile-cover{
+  animation: profileCoverEnterSmooth .68s cubic-bezier(.16,1,.3,1) both !important;
+}
+
+.artist-page-modal.open .artist-profile-name,
+.artist-page-modal.open .artist-profile-desc,
+.artist-page-modal.open .artist-meta-grid,
+.artist-page-modal.open .tracklist{
+  animation: profileTextEnterSmooth .72s cubic-bezier(.16,1,.3,1) both !important;
+}
+
+@keyframes profileCoverEnterSmooth{
+  from{
+    opacity:0;
+    transform:translateY(28px) rotateY(-7deg) scale(.975);
+    filter:blur(4px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) rotateY(0deg) scale(1);
+    filter:blur(0);
+  }
+}
+
+@keyframes profileTextEnterSmooth{
+  from{
+    opacity:0;
+    transform:translateY(22px) scale(.99);
+    filter:blur(3px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+  }
+}
+
+
+/* ===== V5 PREMIUM — IOS MUSIC CARD / COVER EXPANSION ===== */
+
+.artist-page-modal{
+  display:block !important;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:
+    opacity 1.65s cubic-bezier(.12,.94,.18,1),
+    visibility 0s linear .58s;
+  backdrop-filter:blur(0px);
+  background:rgba(5,5,5,.0);
+}
+
+.artist-page-modal.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transition:
+    opacity 1.52s cubic-bezier(.12,.94,.18,1),
+    visibility 0s;
+  backdrop-filter:blur(14px);
+  background:rgba(5,5,5,.88);
+}
+
+.artist-page-inner{
+  transform-origin:center top;
+  transform:
+    perspective(1600px)
+    translateY(8px)
+    scale(.992)
+    rotateX(.8deg);
+  opacity:0;
+  filter:blur(10px);
+  transition:
+    transform 2.1s cubic-bezier(.12,.94,.18,1),
+    opacity 1.52s cubic-bezier(.12,.94,.18,1),
+    filter 2.1s cubic-bezier(.12,.94,.18,1);
+  will-change:transform, opacity, filter;
+}
+
+.artist-page-modal.open .artist-page-inner{
+  transform:
+    perspective(1600px)
+    translateY(0)
+    scale(1)
+    rotateX(0deg);
+  opacity:1;
+  filter:blur(0);
+}
+
+/* Cover expansion */
+.artist-profile-cover{
+  transform-origin:center center;
+  animation:none !important;
+}
+
+.artist-page-modal.open .artist-profile-cover{
+  animation: coverExpansion 2.35s cubic-bezier(.12,.94,.18,1) both !important;
+}
+
+@keyframes coverExpansion{
+  0%{
+    opacity:0;
+    transform:
+      perspective(1800px)
+      scale(.78)
+      translateY(8px)
+      rotateY(-1.2deg)
+      rotateX(.6deg);
+    filter:blur(12px);
+  }
+
+  55%{
+    opacity:1;
+    transform:
+      perspective(1800px)
+      scale(1.008)
+      translateY(-4px)
+      rotateY(1deg)
+      rotateX(-1deg);
+    filter:blur(0);
+  }
+
+  100%{
+    opacity:1;
+    transform:
+      perspective(1800px)
+      scale(1)
+      translateY(0)
+      rotateY(0)
+      rotateX(0);
+    filter:blur(0);
+  }
+}
+
+/* Content reveal stagger */
+.artist-profile-tag{
+  opacity:0;
+  transform:translateY(16px);
+}
+
+.artist-profile-name{
+  opacity:0;
+  transform:translateY(24px);
+}
+
+.artist-profile-sub,
+.artist-profile-desc,
+.artist-meta-grid,
+.tracklist{
+  opacity:0;
+  transform:translateY(18px);
+}
+
+.artist-page-modal.open .artist-profile-tag{
+  animation:fadeLift 1.35s .18s cubic-bezier(.19,1,.22,1) forwards;
+}
+
+.artist-page-modal.open .artist-profile-name{
+  animation:fadeLift 1.55s .24s cubic-bezier(.19,1,.22,1) forwards;
+}
+
+.artist-page-modal.open .artist-profile-sub{
+  animation:fadeLift 1.42s .34s cubic-bezier(.19,1,.22,1) forwards;
+}
+
+.artist-page-modal.open .artist-profile-desc{
+  animation:fadeLift 1.48s .42s cubic-bezier(.19,1,.22,1) forwards;
+}
+
+.artist-page-modal.open .artist-meta-grid{
+  animation:fadeLift 1.58s .48s cubic-bezier(.19,1,.22,1) forwards;
+}
+
+.artist-page-modal.open .tracklist{
+  animation:fadeLift .74s 1.65s cubic-bezier(.12,.94,.18,1) forwards;
+}
+
+@keyframes fadeLift{
+  from{
+    opacity:0;
+    transform:translateY(18px);
+    filter:blur(4px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+    filter:blur(0);
+  }
+}
+
+
+
+/* ===== TRUE SILK OPEN/CLOSE SYSTEM ===== */
+
+.artist-page-modal{
+  display:block !important;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  background:rgba(5,5,5,0);
+  backdrop-filter:blur(0px);
+  transform:translateZ(0);
+  transition:
+    opacity 1.45s cubic-bezier(.16,1,.3,1),
+    background 1.45s cubic-bezier(.16,1,.3,1),
+    backdrop-filter 1.45s cubic-bezier(.16,1,.3,1),
+    visibility 0s linear 1.45s;
+}
+
+.artist-page-modal.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  background:rgba(5,5,5,.88);
+  backdrop-filter:blur(14px);
+  transition:
+    opacity 1.45s cubic-bezier(.16,1,.3,1),
+    background 1.45s cubic-bezier(.16,1,.3,1),
+    backdrop-filter 1.45s cubic-bezier(.16,1,.3,1),
+    visibility 0s;
+}
+
+.artist-page-inner{
+  opacity:0;
+  filter:blur(10px);
+  transform:
+    perspective(1600px)
+    translateY(18px)
+    scale(.985)
+    rotateX(2deg);
+  will-change:transform, opacity, filter;
+  transition:
+    transform 1.75s cubic-bezier(.16,1,.3,1),
+    opacity 1.45s cubic-bezier(.16,1,.3,1),
+    filter 1.75s cubic-bezier(.16,1,.3,1);
+}
+
+.artist-page-modal.open .artist-page-inner{
+  opacity:1;
+  filter:blur(0);
+  transform:
+    perspective(1600px)
+    translateY(0)
+    scale(1)
+    rotateX(0deg);
+}
+
+/* fermeture ultra douce */
+.artist-page-modal:not(.open) .artist-page-inner{
+  opacity:0;
+  filter:blur(2px);
+  transform:
+    perspective(1600px)
+    translateY(3px)
+    scale(.997)
+    rotateX(.2deg);
+}
+
+
+/* ===== CLOSE BACK TO ARTIST CARD EFFECT ===== */
+.artist-page-modal.closing-to-card{
+  opacity:0;
+  background:rgba(5,5,5,0);
+  backdrop-filter:blur(0px);
+  visibility:visible !important;
+  pointer-events:none;
+  transition:
+    opacity 1.15s cubic-bezier(.16,1,.3,1),
+    background 1.15s cubic-bezier(.16,1,.3,1),
+    backdrop-filter 1.15s cubic-bezier(.16,1,.3,1);
+}
+
+.artist-page-modal.closing-to-card .artist-page-inner{
+  opacity:0;
+  filter:blur(6px);
+  transform:
+    perspective(1600px)
+    translateY(42px)
+    scale(.72)
+    rotateX(9deg);
+  transform-origin:center top;
+  transition:
+    transform 1.15s cubic-bezier(.16,1,.3,1),
+    opacity .95s cubic-bezier(.16,1,.3,1),
+    filter 1.15s cubic-bezier(.16,1,.3,1);
+}
+
+.artist-page-modal.closing-to-card .artist-profile-cover{
+  transform:
+    perspective(1600px)
+    translateY(20px)
+    scale(.72)
+    rotateX(6deg) !important;
+  transform-origin:center center;
+  transition:
+    transform 1.15s cubic-bezier(.16,1,.3,1),
+    opacity .95s cubic-bezier(.16,1,.3,1),
+    filter 1.15s cubic-bezier(.16,1,.3,1);
+}
+
+
+/* ===== TRUE MIRROR CARD TRANSITION ===== */
+.artist-page-modal{
+  transform-origin:center center;
+}
+
+.artist-page-modal.open .artist-page-inner{
+  animation: cardExpandIn 1.35s cubic-bezier(.16,1,.3,1) both;
+}
+
+.artist-page-modal.closing-to-card .artist-page-inner{
+  animation: cardCollapseOut 1.35s cubic-bezier(.16,1,.3,1) both;
+}
+
+@keyframes cardExpandIn{
+  0%{
+    opacity:0;
+    transform:
+      perspective(1600px)
+      translateY(18px)
+      scale(.72)
+      rotateX(8deg);
+    filter:blur(8px);
+  }
+
+  100%{
+    opacity:1;
+    transform:
+      perspective(1600px)
+      translateY(0)
+      scale(1)
+      rotateX(0deg);
+    filter:blur(0);
+  }
+}
+
+@keyframes cardCollapseOut{
+  0%{
+    opacity:1;
+    transform:
+      perspective(1600px)
+      translateY(0)
+      scale(1)
+      rotateX(0deg);
+    filter:blur(0);
+  }
+
+  100%{
+    opacity:0;
+    transform:
+      perspective(1600px)
+      translateY(18px)
+      scale(.72)
+      rotateX(8deg);
+    filter:blur(8px);
+  }
+}
+
+
+/* ===== DUST EVAPORATION CLOSE TRANSITION ===== */
+.artist-page-modal.closing-dust{
+  display:block !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:none !important;
+  background:rgba(5,5,5,.88) !important;
+  backdrop-filter:blur(14px) !important;
+}
+
+.artist-page-modal.closing-dust .artist-page-inner{
+  animation:dustEvaporateOut 1.65s cubic-bezier(.16,1,.3,1) both !important;
+  transform-origin:center center !important;
+}
+
+.artist-page-modal.closing-dust::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:99999;
+  opacity:0;
+  background-image:
+    radial-gradient(circle, rgba(200,244,0,.20) 0 1px, transparent 2px),
+    radial-gradient(circle, rgba(240,237,230,.18) 0 1px, transparent 2px),
+    radial-gradient(circle, rgba(255,255,255,.08) 0 1px, transparent 2px);
+  background-size: 42px 42px, 64px 64px, 90px 90px;
+  background-position: 0 0, 18px 22px, 35px 12px;
+  animation:dustField 1.65s cubic-bezier(.16,1,.3,1) both;
+  mix-blend-mode:screen;
+}
+
+@keyframes dustEvaporateOut{
+  0%{
+    opacity:1;
+    transform:
+      perspective(1600px)
+      translateY(0)
+      scale(1)
+      rotateX(0deg);
+    filter:blur(0);
+    clip-path:inset(0 0 0 0);
+  }
+
+  45%{
+    opacity:.72;
+    transform:
+      perspective(1600px)
+      translateY(-8px)
+      scale(.992)
+      rotateX(1deg);
+    filter:blur(2px);
+  }
+
+  100%{
+    opacity:0;
+    transform:
+      perspective(1600px)
+      translateY(-36px)
+      scale(.985)
+      rotateX(3deg);
+    filter:blur(12px);
+    clip-path:inset(0 0 18% 0);
+  }
+}
+
+@keyframes dustField{
+  0%{
+    opacity:0;
+    transform:translateY(20px) scale(.98);
+    filter:blur(0);
+  }
+
+  35%{
+    opacity:.55;
+  }
+
+  100%{
+    opacity:0;
+    transform:translateY(-70px) scale(1.08);
+    filter:blur(6px);
+  }
+}
+
+/* ===== IOS / MOBILE SAFARI COMPATIBILITY ===== */
+html{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+  min-height:100%;
+}
+
+body{
+  min-height:100vh;
+  min-height:100svh;
+  padding-left:env(safe-area-inset-left);
+  padding-right:env(safe-area-inset-right);
+  -webkit-tap-highlight-color:rgba(200,244,0,.18);
+  touch-action:manipulation;
+}
+
+button,
+a,
+[role="button"],
+.artist-card,
+.release-card,
+.preview-btn,
+.track-play-btn{
+  -webkit-tap-highlight-color:rgba(200,244,0,.18);
+  touch-action:manipulation;
+}
+
+input,
+textarea,
+select,
+button{
+  font-size:16px;
+}
+
+input,
+textarea,
+select{
+  -webkit-appearance:none;
+  appearance:none;
+  border-radius:0;
+}
+
+.modal,
+.artist-page-modal{
+  min-height:100vh;
+  min-height:100svh;
+  padding-left:env(safe-area-inset-left);
+  padding-right:env(safe-area-inset-right);
+}
+
+.artist-page-inner{
+  min-height:100vh;
+  min-height:100svh;
+  padding-bottom:calc(80px + env(safe-area-inset-bottom));
+}
+
+.artist-page-close{
+  top:calc(26px + env(safe-area-inset-top));
+  right:calc(32px + env(safe-area-inset-right));
+  min-width:44px;
+  min-height:44px;
+}
+
+.now-playing{
+  bottom:calc(20px + env(safe-area-inset-bottom));
+  right:calc(20px + env(safe-area-inset-right));
+  max-width:calc(100vw - 40px - env(safe-area-inset-left) - env(safe-area-inset-right));
+}
+
+@supports (-webkit-touch-callout:none){
+  .cursor,
+  .cursor-ring{
+    display:none !important;
+  }
+
+  .artist-page-modal,
+  .artist-page-modal.open{
+    -webkit-backdrop-filter:blur(14px);
+  }
+}
+
+@media(max-width:720px){
+  .artist-page-close{
+    top:calc(18px + env(safe-area-inset-top));
+    right:calc(18px + env(safe-area-inset-right));
+  }
+
+  .now-playing{
+    left:calc(14px + env(safe-area-inset-left));
+    right:calc(14px + env(safe-area-inset-right));
+    bottom:calc(14px + env(safe-area-inset-bottom));
+    min-width:0;
+    width:auto;
+  }
+
+  .submit-input,
+  #modal-email{
+    font-size:16px !important;
+  }
+}
+
+/* ===== ARTIST PAGE FIXED COVER + SPECTRUM DISPLAY ===== */
+.artist-page-modal .artist-profile-info{
+  position:relative;
+  isolation:isolate;
+}
+
+.artist-page-modal .artist-spectrum{
+  position:fixed;
+  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 34px);
+  right:calc(max(48px, (100vw - 1180px) / 2) - 34px);
+  top:calc(112px + env(safe-area-inset-top));
+  height:min(360px, 54vh);
+  z-index:0;
+  opacity:.42;
+  pointer-events:none;
+  filter:drop-shadow(0 0 18px rgba(200,244,0,.12));
+  mix-blend-mode:screen;
+}
+
+.artist-page-modal .artist-profile-info::before{
+  content:'';
+  position:fixed;
+  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 40px);
+  right:calc(max(48px, (100vw - 1180px) / 2) - 40px);
+  top:calc(108px + env(safe-area-inset-top));
+  height:min(390px, 58vh);
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 68% 40%, rgba(200,244,0,.11), transparent 48%),
+    linear-gradient(180deg, rgba(255,45,85,.09), rgba(5,5,5,0) 78%);
+  opacity:.78;
+}
+
+.artist-page-modal .artist-profile-info > :not(.artist-spectrum){
+  position:relative;
+  z-index:1;
+}
+
+@media(min-width:901px){
+  .artist-page-modal .artist-profile-grid > div:first-child{
+    min-height:min(430px, 32vw);
+  }
+
+  .artist-page-modal.open .artist-profile-grid > div:first-child .artist-profile-cover{
+    position:fixed;
+    left:max(48px, calc((100vw - 1180px) / 2));
+    top:calc(112px + env(safe-area-inset-top));
+    width:min(430px, 32vw);
+    max-width:430px;
+    z-index:1;
+    animation:none !important;
+    transform:none !important;
+  }
+}
+
+@media(max-width:900px){
+  .artist-page-modal .artist-spectrum{
+    position:fixed;
+    left:-18px;
+    right:-18px;
+    top:calc(96px + env(safe-area-inset-top));
+    height:270px;
+    opacity:.36;
+  }
+
+  .artist-page-modal .artist-profile-info::before{
+    position:fixed;
+    left:-20px;
+    right:-20px;
+    top:calc(92px + env(safe-area-inset-top));
+    height:300px;
+  }
+}
+
+
+
+/* ===== HYBRID PERFORMANCE PLAYER + FIXED ARTIST VISUALS ===== */
+#nowPlayingAudio{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
+.now-playing{
+  width:min(280px, calc(100vw - 40px));
+}
+
+.now-playing-title-line{
+  min-width:0;
+}
+
+.now-playing-progress{
+  height:3px;
+  width:100%;
+  margin-top:10px;
+  background:rgba(240,237,230,.12);
+  overflow:hidden;
+}
+
+.now-playing-progress span{
+  display:block;
+  height:100%;
+  width:0;
+  background:#C8F400;
+  box-shadow:0 0 18px rgba(200,244,0,.45);
+}
+
+.track-play-btn.active,
+.latest-preview-btn.active{
+  background:#C8F400 !important;
+  color:#050505 !important;
+}
+
+.artist-page-modal.open .artist-profile-cover{
+  filter:none !important;
+}
+
+@media(min-width:901px){
+  .artist-page-modal.open .artist-profile-grid > div:first-child{
+    min-height:min(430px, 32vw);
+  }
+
+  .artist-page-modal.open .artist-profile-grid > div:first-child .artist-profile-cover{
+    position:fixed !important;
+    left:max(48px, calc((100vw - 1180px) / 2)) !important;
+    top:calc(112px + env(safe-area-inset-top)) !important;
+    width:min(430px, 32vw) !important;
+    max-width:430px !important;
+    z-index:2 !important;
+    transform:none !important;
+    animation:none !important;
+  }
+}
+
+.artist-spectrum{
+  opacity:.46;
+}
+
 </style>
 </head>
 <body>
+
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<nav class="site-nav">
-  <a class="logo" href="#">N3XT</a>
-  <div class="nav-links">
-    <a href="#mission">Mission</a>
-    <a href="#artists">Artistes</a>
-    <a href="#contact">Contact</a>
-  </div>
-  <a class="nav-cta" href="#contact">Soumettre un projet</a>
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">N3XT</a>
+  <ul class="nav-links">
+    <li><a href="#pillars">Mission</a></li>
+    <li><a href="#artists">Artistes</a></li>
+    <li><a href="#droits">Droits</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Soumettre un projet</a>
+  <button class="burger" id="burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<main>
-  <section class="hero">
-    <div class="hero-inner">
-      <div>
-        <p class="eyebrow">Premier label indépendant - Music AI - Paris</p>
-        <h1>N<span>3</span>XT</h1>
-        <p class="hero-copy">Signer, produire et défendre les artistes qui créent avec l'intelligence artificielle. Une maison pour les projets hybrides, ambitieux et réellement écoutables.</p>
-        <div class="actions">
-          <a class="btn-primary" href="#artists">Découvrir nos artistes</a>
-          <button class="btn-secondary" type="button" data-open-artist="n3xt">Latest release</button>
-        </div>
-      </div>
-      <aside class="latest-card" aria-label="Latest release">
-        <img class="latest-cover" src="assets/images/280df0d804d297a1.png" alt="N3XT PART 1" loading="eager">
-        <div class="latest-head">
-          <h2>N3XT PART 1</h2>
-          <button type="button" data-open-artist="n3xt">Fiche artiste</button>
-        </div>
-        
-        <button class="mini-track" type="button" data-play data-artist="N3XT" data-title="Démon" data-src="assets/audio/6bf1f9af8076730e.mp3">
-          <span>01</span>
-          <strong>Démon</strong>
-          <em>1:11</em>
-        </button>
-        <button class="mini-track" type="button" data-play data-artist="N3XT" data-title="Labyrinthe" data-src="assets/audio/7241018ef878ca2c.mp3">
-          <span>02</span>
-          <strong>Labyrinthe</strong>
-          <em>1:11</em>
-        </button>
-        <button class="mini-track" type="button" data-play data-artist="N3XT" data-title="Désespoir et silence (remix)" data-src="assets/audio/77d0b9e66c5604fe.mp3">
-          <span>03</span>
-          <strong>Désespoir et silence (remix)</strong>
-          <em>1:11</em>
-        </button>
-        <button class="mini-track" type="button" data-play data-artist="N3XT" data-title="Les ad-lib" data-src="assets/audio/666a0aadab9d10e6.mp3">
-          <span>04</span>
-          <strong>Les ad-lib</strong>
-          <em>1:11</em>
-        </button>
-      </aside>
-    </div>
-  </section>
+<!-- MENU MOBILE -->
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="#" id="link-mission">Notre Mission</a></li>
+    <li><a href="#" id="link-artists">Artistes</a></li>
+    <li><a href="#" id="link-droits">Droits &amp; Protection</a></li>
+    <li><a href="#" id="link-contact">Contact</a></li>
+    <li><a href="#" id="link-cta" class="mobile-cta">Soumettre un projet</a></li>
+  </ul>
+</div>
 
-  <section class="band" id="mission">
-    <div class="section-inner">
-      <h2 class="section-title">Un label pensé pour durer</h2>
-      <p class="section-text">Cette version est reconstruite pour accueillir plusieurs artistes, plusieurs albums et beaucoup de titres sans alourdir la page. Les sons ne sont chargés qu'au clic, et le lecteur est unique sur tout le site.</p>
-      <div class="pillars-grid">
-        <article class="pillar"><b>01</b><h3>Produire</h3><p>Des projets audio, visuels et narratifs cohérents, sans empiler du code fragile.</p></article>
-        <article class="pillar"><b>02</b><h3>Protéger</h3><p>Une structure claire pour les droits, les crédits, les sorties et les previews.</p></article>
-        <article class="pillar"><b>03</b><h3>Scaler</h3><p>Ajouter des artistes et des albums depuis des données, sans reconstruire toute la page.</p></article>
-      </div>
-    </div>
-  </section>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <svg class="waveform" viewBox="0 0 1440 200" preserveAspectRatio="none">
+      <path d="M0,100 C180,20 360,180 540,100 C720,20 900,180 1080,100 C1260,20 1380,140 1440,100 L1440,200 L0,200 Z" fill="rgba(200,244,0,0.3)"/>
+      <path d="M0,130 C200,60 400,160 600,110 C800,60 1000,160 1200,110 C1300,85 1380,120 1440,100 L1440,200 L0,200 Z" fill="rgba(200,244,0,0.15)"/>
+    </svg>
+  </div>
 
-  <section class="band" id="artists">
-    <div class="section-inner">
-      <h2 class="section-title">Artistes</h2>
-      <p class="section-text">Chaque fiche utilise le même moteur léger : pochette fixe, spectrum décoratif, tracklist chargée à la demande.</p>
-      <div class="artists-grid">
-        
-      <button class="artist-card" type="button" data-open-artist="n3xt">
-        <span class="artist-card-glow"></span>
-        <span class="artist-card-type">Projet label</span>
-        <strong>N3XT</strong>
-        <small>Album preview</small>
-      </button>
-      <button class="artist-card" type="button" data-open-artist="betty">
-        <span class="artist-card-glow"></span>
-        <span class="artist-card-type">Artiste du label</span>
-        <strong>Betty</strong>
-        <small>Single preview</small>
-      </button>
-        <div class="artist-card add"><strong>+</strong><small>Nouvel artiste bientôt</small></div>
-      </div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Premier label indépendant — Music AI — Paris, 2025
+      </p>
+<h1 class="hero-title">N<span class="accent">3</span>XT</h1>
+    <p class="hero-sub">
+      Signer, produire et défendre les artistes qui créent avec l'intelligence artificielle.
+      L'avenir de la musique est <em>déjà là</em> — nous en sommes la maison.
+    </p>
+    <div class="hero-actions">
+      <a href="#artists" class="btn-primary"><span>Découvrir nos artistes</span></a>
+      <a href="#contact" class="btn-secondary">Nous rejoindre</a>
     </div>
-  </section>
+  </div>
 
-  <section class="band submit-band" id="contact">
-    <div class="section-inner">
-      <h2 class="section-title">Soumettre un projet</h2>
-      <p class="section-text">Envoyez un titre, une démo ou une idée d'univers. Le label écoute les propositions hybrides humain x IA.</p>
-      <form class="submit-form">
-        <input type="email" placeholder="Votre email">
-        <button type="submit">Envoyer</button>
-      </form>
-    </div>
-  </section>
-</main>
+  <div class="hero-counter">
+    <div class="counter-num" id="counterNum">0</div>
+    <div class="counter-label">Tracks produites avec AI</div>
+  </div>
 
-<div class="artist-modal" id="artistModal" aria-hidden="true">
-  <button class="modal-close" type="button" id="closeArtist">✕ Fermer</button>
-  <div class="artist-layout">
-    <aside class="artist-side">
-      <img class="artist-cover" id="artistCover" src="" alt="" loading="lazy">
-    </aside>
-    <section class="artist-info">
-      <div class="spectrum" aria-hidden="true"><span style="--i:0;--h1:24px;--h2:46px"></span><span style="--i:1;--h1:39px;--h2:65px"></span><span style="--i:2;--h1:54px;--h2:84px"></span><span style="--i:3;--h1:69px;--h2:103px"></span><span style="--i:4;--h1:84px;--h2:122px"></span><span style="--i:5;--h1:99px;--h2:141px"></span><span style="--i:6;--h1:114px;--h2:160px"></span><span style="--i:7;--h1:129px;--h2:46px"></span><span style="--i:8;--h1:144px;--h2:65px"></span><span style="--i:9;--h1:24px;--h2:84px"></span><span style="--i:10;--h1:39px;--h2:103px"></span><span style="--i:11;--h1:54px;--h2:122px"></span><span style="--i:12;--h1:69px;--h2:141px"></span><span style="--i:13;--h1:84px;--h2:160px"></span><span style="--i:14;--h1:99px;--h2:46px"></span><span style="--i:15;--h1:114px;--h2:65px"></span><span style="--i:16;--h1:129px;--h2:84px"></span><span style="--i:17;--h1:144px;--h2:103px"></span><span style="--i:18;--h1:24px;--h2:122px"></span><span style="--i:19;--h1:39px;--h2:141px"></span><span style="--i:20;--h1:54px;--h2:160px"></span><span style="--i:21;--h1:69px;--h2:46px"></span><span style="--i:22;--h1:84px;--h2:65px"></span><span style="--i:23;--h1:99px;--h2:84px"></span><span style="--i:24;--h1:114px;--h2:103px"></span><span style="--i:25;--h1:129px;--h2:122px"></span><span style="--i:26;--h1:144px;--h2:141px"></span><span style="--i:27;--h1:24px;--h2:160px"></span></div>
-      <h2 id="artistName"></h2>
-      <div class="artist-sub" id="artistSubtitle"></div>
-      <p class="artist-desc" id="artistDescription"></p>
-      <div class="meta-grid">
-        <div class="meta-item"><span>Projet</span><strong id="artistAlbum"></strong></div>
-        <div class="meta-item"><span>Année</span><strong id="artistYear"></strong></div>
-        <div class="meta-item"><span>Style</span><strong id="artistStyle"></strong></div>
-        <div class="meta-item"><span>Format</span><strong>Preview 1:11</strong></div>
-      </div>
-      <div class="tracklist" id="artistTracks"></div>
-    </section>
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span class="scroll-text">Scroll</span>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker" id="ticker">
+    <span class="ticker-item">SIGNER <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">DISTRIBUER <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">PROTÉGER <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">MUSIC AI <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">SACEM <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">ADAMI <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">HUMAN × AI <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">N3XT RECORDS <span class="ticker-sep">✦</span></span>
+    <!-- duplicat pour loop -->
+    <span class="ticker-item">SIGNER <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">DISTRIBUER <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">PROTÉGER <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">MUSIC AI <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">SACEM <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">ADAMI <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">HUMAN × AI <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">N3XT RECORDS <span class="ticker-sep">✦</span></span>
   </div>
 </div>
 
-<div class="player" id="player">
-  <button type="button" id="playerToggle" aria-label="Lecture">▶</button>
+<!-- PILLARS -->
+<section class="pillars" id="pillars">
+  <div class="pillars-header reveal">
+    <div>
+      <div class="section-tag">Notre mission</div>
+      <h2 class="section-title">Trois<br>piliers.<br>Un futur.</h2>
+    </div>
+    <p class="pillars-desc">
+      N3XT n'est pas un label de plus. C'est une infrastructure pionnière, construite pour l'ère où l'IA devient instrument, co-auteur, et producteur. Nous posons les règles du jeu avant que les majors ne le fassent à notre place.
+    </p>
+  </div>
+
+  <div class="pillars-grid reveal">
+    <div class="pillar-card">
+      <div class="pillar-num">01</div>
+      <div class="pillar-icon">🎵</div>
+      <h3 class="pillar-title">Signer & Distribuer les artistes AI</h3>
+      <p class="pillar-text">N3XT signe et distribue des projets musicaux créés avec ou par l'IA — Suno, Udio, et toute plateforme de génération musicale. Nous accompagnons l'artiste de la signature au catalogue : mise en ligne sur toutes les plateformes (Spotify, Apple Music, Deezer, YouTube Music, Tidal), gestion des métadonnées, stratégie de release et suivi des royalties. Chaque artiste — humain, hybride ou 100% IA — bénéficie d'un suivi dédié et d'une présence mondiale.</p>
+      <span class="pillar-tag">Distribution mondiale</span>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num">02</div>
+      <div class="pillar-icon">⚡</div>
+      <h3 class="pillar-title">Co-production Humain × AI</h3>
+      <p class="pillar-text">L'avenir de la musique n'est pas l'IA seule — c'est la fusion entre l'intention humaine et la puissance générative de la machine. N3XT accompagne les artistes qui co-créent : écriture des paroles, direction artistique, arrangement, éditing vocal, mixage et mastering augmentés par IA. Nous travaillons avec les créateurs à chaque étape du processus — du prompt initial jusqu'au master livrable — pour que l'empreinte humaine soit réelle, documentée, et protégeable juridiquement.</p>
+      <span class="pillar-tag">Studio & créatif</span>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num">03</div>
+      <div class="pillar-icon">⚖️</div>
+      <h3 class="pillar-title">Droits & Reconnaissance SACEM / ADAMI / SPEDIDAM</h3>
+      <p class="pillar-text">Nous menons le combat juridique et institutionnel pour que la musique AI soit reconnue, protégée et rémunérée. Cela passe par l'accompagnement au dépôt SACEM des œuvres co-créées, la défense des droits voisins auprès de l'ADAMI et de la SPEDIDAM pour les artistes-interprètes, et la négociation de droits producteur via la SCPP et la SPPF. Nous suivons de près l'évolution législative et intervenons activement dans ce débat pour que nos artistes soient protégés aujourd'hui et demain.</p>
+      <span class="pillar-tag">Juridique & lobbying</span>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+<div class="interlude-banner">
+  <div class="texture-overlay"></div>
+  <div class="interlude-text">
+    HUMAN × <span>AI</span><br>
+    IS NOW
+  </div>
+</div>
+
+<section class="latest-release">
+  <div class="section-tag">Latest Release</div>
+
+  <div class="release-card" data-artist-target="n3xt" role="button" tabindex="0" aria-label="Ouvrir la fiche artiste N3XT">
+    <img class="release-cover" src="assets/images/280df0d804d297a1.png" alt="N3XT PART 1">
+
+    <div>
+      <div class="release-meta">Archive_001 — Paris — 2026</div>
+      <div class="release-title">PART I<br>N3XT</div>
+
+      <p class="release-desc">
+        Premier projet officiel de N3XT Records.
+        Une œuvre hybride construite entre émotion humaine, direction artistique et intelligence artificielle.
+      </p>
+
+<div class="preview-wrapper latest-release-preview" style="margin-top:28px;">
+  <button class="preview-btn latest-preview-btn"
+          type="button"
+          data-title="N3XT — Démon"
+          data-audio="assets/audio/6bf1f9af8076730e.mp3">
+    ▶ Preview
+  </button>
+</div>
+
+
+      <div class="preview-wrapper" style="margin-top:28px;">
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARTISTS -->
+<section class="artists" id="artists">
+  <div class="artists-header reveal">
+    <div>
+      <div class="section-tag">Roster</div>
+      <h2 class="section-title">Nos artistes</h2>
+    </div>
+    <a href="#contact" class="btn-secondary">Rejoindre le roster →</a>
+  </div>
+
+  <div class="artists-grid reveal">
+    <div class="artist-card artist-card-clickable" id="artist-n3xt-card" style="position:relative; overflow:hidden; cursor:pointer;">
+      <img src="assets/images/280df0d804d297a1.png"
+           alt="N3XT PART 1"
+           style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:none;">
+
+      <div class="artist-info" style="background:linear-gradient(to top, rgba(5,5,5,0.96) 0%, rgba(5,5,5,0.2) 100%);">
+        <div class="artist-type">Human × AI — N3XT Records</div>
+        <div class="artist-name">N3XT</div>
+        <div class="artist-status">● PART 1 — Dark Alternative / Trap / R&B</div>
+      </div>
+    </div>
+    <div class="artist-card">
+      <div class="artist-bg"></div>
+      <div class="artist-visual">🌐</div>
+      <div class="artist-info">
+        <div class="artist-type">AI Natif — Suno</div>
+        <div class="artist-name">VOLT_X</div>
+        <div class="artist-status">○ Bientôt signé</div>
+      </div>
+    </div>
+    <div class="artist-card">
+      <div class="artist-bg"></div>
+      <div class="artist-visual">🔮</div>
+      <div class="artist-info">
+        <div class="artist-type">AI Natif — Udio</div>
+        <div class="artist-name">PRISM_7</div>
+        <div class="artist-status">○ En discussion</div>
+      </div>
+    </div>
+
+    <div class="artist-card artist-card-clickable" id="artist-betty-card" style="position:relative; overflow:hidden; cursor:pointer;">
+      <img src="assets/images/02d7bae330380cef.jpg"
+           alt="Betty"
+           style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; filter:none; background:#050505;">
+      <div class="artist-info" style="background:linear-gradient(to top, rgba(5,5,5,0.96) 0%, rgba(5,5,5,0.2) 100%);">
+        <div class="artist-type">Human × AI — N3XT Records</div>
+        <div class="artist-name">Betty</div>
+        <div class="artist-status">● Chanson Française / Alternative Indie Soul / Neo-Soul</div>
+      </div>
+    </div>
+    </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto" id="manifesto">
+  <div class="manifesto-inner">
+    <div class="section-tag reveal">Manifeste</div>
+    <div class="manifesto-quote reveal">
+      <div>L'IA ne remplace</div>
+      <div class="line-acid">pas l'artiste.</div>
+      <div>Elle révèle ce qu'il</div>
+      <div class="line-elec">n'osait pas encore.</div>
+    </div>
+    <div class="manifesto-body reveal">
+      <p>
+        Pendant des siècles, chaque nouvel instrument a été accusé de "tuer" la musique. La guitare électrique, les synthétiseurs, le sampler, l'auto-tune. Ils ont tous créé de nouveaux genres, de nouvelles voix, de nouvelles cultures.
+        <br><br>
+        L'intelligence artificielle est le prochain instrument. Et comme tous les instruments, sa valeur dépend de qui le tient — et ce qu'il a à dire.
+      </p>
+      <p>
+        N3XT Records est fondé sur une conviction simple : les créateurs qui utilisent l'IA aujourd'hui sont les pionniers de demain. Ils méritent un label qui comprend leur langage, défend leurs droits, et amplifie leur voix auprès du monde entier.
+        <br><br>
+        Nous ne sommes pas neutres. Nous prenons parti pour l'avenir.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- DROITS -->
+<section class="droits" id="droits">
+  <div class="droits-inner">
+    <div class="reveal">
+      <div class="section-tag">Droits & Protection</div>
+      <h2 class="droits-title">On se bat<br>pour vos<br>droits.</h2>
+    </div>
+    <div class="droits-items reveal">
+      <div class="droits-item">
+        <span class="droits-item-num">01</span>
+        <div>
+          <div class="droits-item-title">Dépôt SACEM pour œuvres AI</div>
+          <p class="droits-item-text">Nous guidons nos artistes dans le processus de dépôt et défendons la reconnaissance des œuvres co-créées avec IA auprès de la SACEM.</p>
+        </div>
+      </div>
+      <div class="droits-item">
+        <span class="droits-item-num">02</span>
+        <div>
+          <div class="droits-item-title">Droits voisins ADAMI / SPEDIDAM</div>
+          <p class="droits-item-text">Les artistes-interprètes qui collaborent avec l'IA ont des droits. Nous les aidons à les faire valoir et à percevoir les rémunérations qui leur reviennent.</p>
+        </div>
+      </div>
+      <div class="droits-item">
+        <span class="droits-item-num">03</span>
+        <div>
+          <div class="droits-item-title">Cadre contractuel pionnier</div>
+          <p class="droits-item-text">Nos contrats de label intègrent nativement la co-création AI — partage de revenus, crédits, propriété intellectuelle. Nous construisons les standards de demain.</p>
+        </div>
+      </div>
+      <div class="droits-item">
+        <span class="droits-item-num">04</span>
+        <div>
+          <div class="droits-item-title">Plaidoyer institutionnel</div>
+          <p class="droits-item-text">Nous dialoguons avec les instances culturelles françaises et européennes pour que la législation reconnaisse enfin la réalité de la création musicale augmentée.</p>
+        </div>
+      </div>
+      <div class="droits-item">
+        <span class="droits-item-num">05</span>
+        <div>
+          <div class="droits-item-title">Responsabilité exclusive du créateur</div>
+          <p class="droits-item-text">Tout créateur signé chez N3XT déclare sur l'honneur son identité réelle (vérifiée par pièce officielle) et la nature exacte de ses œuvres. Toute fausse déclaration engage sa responsabilité civile et pénale exclusive. N3XT, agissant de bonne foi, se réserve le droit de se retourner contre lui pour l'intégralité des préjudices subis.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBMIT -->
+<section class="submit" id="contact">
+  <div class="submit-inner reveal">
+    <div class="section-tag" style="justify-content:center">Rejoindre N3XT</div>
+    <h2 class="submit-title">Votre musique<br>mérite une <span class="acid">maison.</span></h2>
+    <p class="submit-desc">Que vous soyez artiste AI pur, co-créateur humain × machine, ou producteur visionnaire — on veut vous entendre.</p>
+    <div class="submit-form">
+      <input type="email" class="submit-input" placeholder="votre@email.com">
+      <button class="submit-btn" onclick="handleSubmit()">Soumettre →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
   <div>
-    <div class="player-title" id="playerTitle">Aucune preview</div>
-    <div class="player-meta" id="playerMeta">Choisis un morceau</div>
-    <div class="progress"><span id="playerProgress"></span></div>
+    <span class="footer-logo">N3XT</span>
+    <p class="footer-tagline">Premier label indépendant<br>Music AI — Paris, France</p>
   </div>
-  <div class="time" id="playerTime">0:00 / 1:11</div>
-  <audio id="audio" preload="none" playsinline></audio>
+  <ul class="footer-links">
+    <li><a href="#pillars">Notre mission</a></li>
+    <li><a href="#artists">Artistes</a></li>
+    <li><a href="#droits">Droits & Protection</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#" id="link-legal">Mentions légales</a></li>
+  </ul>
+  <div class="footer-copy">
+    © 2025 N3XT Records<br>
+    Tous droits réservés<br>
+    Paris, 20e arrondissement<br>
+    <br>
+    <span style="color:rgba(200,244,0,0.4)">Built with Human × AI</span>
+  </div>
+</footer>
+
+<!-- MODAL MISSION -->
+<div class="modal" id="modal-mission">
+  <div class="modal-inner">
+    <div class="modal-header">
+      <div><div class="modal-tag">N3XT Records</div><div class="modal-title">Notre Mission</div></div>
+      <button class="modal-close" id="close-mission">✕ Fermer</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:rgba(240,237,230,0.4); margin-bottom:32px;">N3XT n'est pas un label de plus. C'est une infrastructure pionnière, construite pour l'ère où l'IA devient instrument, co-auteur, et producteur.</p>
+
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding:28px 0;">
+        <div style="display:flex; gap:16px;">
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:2.5rem; color:rgba(240,237,230,0.15); line-height:1; flex-shrink:0;">01</div>
+          <div>
+            <div style="font-size:1.3rem; margin-bottom:6px;">🎵</div>
+            <div style="font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#F0EDE6; margin-bottom:10px;">Signer & Distribuer les artistes AI</div>
+            <p>N3XT signe et distribue des projets musicaux créés avec ou par l'IA — Suno, Udio, et toute plateforme de génération musicale. Mise en ligne sur Spotify, Apple Music, Deezer, YouTube Music, Tidal. Gestion des métadonnées, stratégie de release et suivi des royalties. Chaque artiste — humain, hybride ou 100% IA — bénéficie d'un suivi dédié et d'une présence mondiale.</p>
+            <span style="display:inline-block; margin-top:12px; font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; padding:5px 10px; border:1px solid rgba(240,237,230,0.15); color:rgba(240,237,230,0.3);">Distribution mondiale</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding:28px 0;">
+        <div style="display:flex; gap:16px;">
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:2.5rem; color:rgba(240,237,230,0.15); line-height:1; flex-shrink:0;">02</div>
+          <div>
+            <div style="font-size:1.3rem; margin-bottom:6px;">⚡</div>
+            <div style="font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#F0EDE6; margin-bottom:10px;">Co-production Humain × AI</div>
+            <p>La fusion entre l'intention humaine et la puissance générative de la machine. N3XT accompagne les artistes qui co-créent : écriture des paroles, direction artistique, arrangement, éditing vocal, mixage et mastering augmentés par IA. Du prompt initial jusqu'au master livrable — pour que l'empreinte humaine soit réelle, documentée, et protégeable juridiquement.</p>
+            <span style="display:inline-block; margin-top:12px; font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; padding:5px 10px; border:1px solid rgba(240,237,230,0.15); color:rgba(240,237,230,0.3);">Studio & créatif</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding:28px 0 0;">
+        <div style="display:flex; gap:16px;">
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:2.5rem; color:rgba(240,237,230,0.15); line-height:1; flex-shrink:0;">03</div>
+          <div>
+            <div style="font-size:1.3rem; margin-bottom:6px;">⚖️</div>
+            <div style="font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#F0EDE6; margin-bottom:10px;">Droits & Reconnaissance SACEM / ADAMI / SPEDIDAM</div>
+            <p>Accompagnement au dépôt SACEM, défense des droits voisins auprès de l'ADAMI et SPEDIDAM, négociation de droits producteur via la SCPP et la SPPF. Nous intervenons activement dans le débat législatif pour que nos artistes soient protégés aujourd'hui et demain.</p>
+            <span style="display:inline-block; margin-top:12px; font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; padding:5px 10px; border:1px solid rgba(240,237,230,0.15); color:rgba(240,237,230,0.3);">Juridique & lobbying</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<footer>N3XT Records - Music AI - Paris</footer>
+<!-- MODAL ARTISTES -->
+<div class="modal" id="modal-artists">
+  <div class="modal-inner">
+    <div class="modal-header">
+      <div><div class="modal-tag">Roster</div><div class="modal-title">Nos Artistes</div></div>
+      <button class="modal-close" id="close-artists">✕ Fermer</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:#111; border:1px solid rgba(240,237,230,0.06); padding:20px; margin-bottom:12px; display:flex; gap:16px; align-items:center;">
+        <div style="font-size:2rem; width:48px; height:48px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; flex-shrink:0;">🎤</div>
+        <div>
+          <div style="font-family:'Space Mono',monospace; font-size:0.55rem; letter-spacing:0.2em; text-transform:uppercase; color:#C8F400; margin-bottom:4px;">Co-production Humain × AI</div>
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:1.4rem; color:#F0EDE6;">Mami</div>
+          <div style="font-size:0.8rem; color:rgba(240,237,230,0.3);">● Paris — Trap / R&B / Urbain</div>
+        </div>
+      </div>
+      <div style="background:#111; border:1px solid rgba(240,237,230,0.06); padding:20px; margin-bottom:12px; display:flex; gap:16px; align-items:center;">
+        <div style="font-size:2rem; width:48px; height:48px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; flex-shrink:0;">🌐</div>
+        <div>
+          <div style="font-family:'Space Mono',monospace; font-size:0.55rem; letter-spacing:0.2em; text-transform:uppercase; color:#C8F400; margin-bottom:4px;">AI Natif — Suno</div>
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:1.4rem; color:#F0EDE6;">VOLT_X</div>
+          <div style="font-size:0.8rem; color:rgba(240,237,230,0.3);">○ Bientôt signé</div>
+        </div>
+      </div>
+      <div style="background:#111; border:1px solid rgba(240,237,230,0.06); padding:20px; margin-bottom:24px; display:flex; gap:16px; align-items:center;">
+        <div style="font-size:2rem; width:48px; height:48px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; flex-shrink:0;">🔮</div>
+        <div>
+          <div style="font-family:'Space Mono',monospace; font-size:0.55rem; letter-spacing:0.2em; text-transform:uppercase; color:#C8F400; margin-bottom:4px;">AI Natif — Udio</div>
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:1.4rem; color:#F0EDE6;">PRISM_7</div>
+          <div style="font-size:0.8rem; color:rgba(240,237,230,0.3);">○ En discussion</div>
+        </div>
+      </div>
+      <div id="btn-join-roster" style="background:rgba(200,244,0,0.04); border:1px dashed rgba(200,244,0,0.2); padding:24px; text-align:center; cursor:pointer;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:2rem; color:rgba(200,244,0,0.3); margin-bottom:6px;">+</div>
+        <div style="font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(200,244,0,0.5);">Rejoindre le roster</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DROITS -->
+<div class="modal" id="modal-droits">
+  <div class="modal-inner">
+    <div class="modal-header">
+      <div><div class="modal-tag">Protection</div><div class="modal-title">Droits & Protection</div></div>
+      <button class="modal-close" id="close-droits">✕ Fermer</button>
+    </div>
+    <div class="modal-body">
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding:20px 0; display:flex; gap:14px;">
+        <span style="font-family:'Space Mono',monospace; font-size:0.65rem; color:rgba(240,237,230,0.2); flex-shrink:0; padding-top:3px;">01</span>
+        <div><div style="font-size:0.95rem; font-weight:500; color:#F0EDE6; margin-bottom:6px;">Dépôt SACEM pour oeuvres AI</div><p>Nous guidons nos artistes dans le processus de dépôt et défendons la reconnaissance des oeuvres co-créées avec IA auprès de la SACEM.</p></div>
+      </div>
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding:20px 0; display:flex; gap:14px;">
+        <span style="font-family:'Space Mono',monospace; font-size:0.65rem; color:rgba(240,237,230,0.2); flex-shrink:0; padding-top:3px;">02</span>
+        <div><div style="font-size:0.95rem; font-weight:500; color:#F0EDE6; margin-bottom:6px;">Droits voisins ADAMI / SPEDIDAM</div><p>Les artistes-interprètes qui collaborent avec l'IA ont des droits. Nous les aidons à les faire valoir et à percevoir les rémunérations qui leur reviennent.</p></div>
+      </div>
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding:20px 0; display:flex; gap:14px;">
+        <span style="font-family:'Space Mono',monospace; font-size:0.65rem; color:rgba(240,237,230,0.2); flex-shrink:0; padding-top:3px;">03</span>
+        <div><div style="font-size:0.95rem; font-weight:500; color:#F0EDE6; margin-bottom:6px;">Cadre contractuel pionnier</div><p>Nos contrats intègrent nativement la co-création AI — partage de revenus, crédits, propriété intellectuelle. Nous construisons les standards de demain.</p></div>
+      </div>
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding:20px 0; display:flex; gap:14px;">
+        <span style="font-family:'Space Mono',monospace; font-size:0.65rem; color:rgba(240,237,230,0.2); flex-shrink:0; padding-top:3px;">04</span>
+        <div><div style="font-size:0.95rem; font-weight:500; color:#F0EDE6; margin-bottom:6px;">Plaidoyer institutionnel</div><p>Nous dialoguons avec les instances culturelles françaises et européennes pour que la législation reconnaisse la réalité de la création musicale augmentée.</p></div>
+      </div>
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding:20px 0; display:flex; gap:14px;">
+        <span style="font-family:'Space Mono',monospace; font-size:0.65rem; color:rgba(240,237,230,0.2); flex-shrink:0; padding-top:3px;">05</span>
+        <div><div style="font-size:0.95rem; font-weight:500; color:#F0EDE6; margin-bottom:6px;">Responsabilité exclusive du créateur</div><p>Tout créateur signé chez N3XT déclare sur l'honneur son identité réelle et la nature exacte de ses oeuvres. Toute fausse déclaration engage sa responsabilité civile et pénale exclusive.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONTACT -->
+<div class="modal" id="modal-contact">
+  <div class="modal-inner">
+    <div class="modal-header">
+      <div><div class="modal-tag">Rejoindre N3XT</div><div class="modal-title">Contact</div></div>
+      <button class="modal-close" id="close-contact">✕ Fermer</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:28px; color:rgba(240,237,230,0.4);">Que vous soyez artiste AI pur, co-créateur humain x machine, ou producteur visionnaire — on veut vous entendre.</p>
+      <div style="display:flex;">
+        <input id="modal-email" type="email" placeholder="votre@email.com" style="flex:1; background:#1a1a1a; border:1px solid rgba(240,237,230,0.1); border-right:none; padding:14px 16px; color:#F0EDE6; font-family:'DM Sans',sans-serif; font-size:0.9rem; outline:none;">
+        <button id="modal-btn" style="background:#C8F400; color:#050505; border:none; padding:14px 20px; font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:700; cursor:pointer;">Envoyer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MENTIONS LÉGALES -->
+<div class="modal" id="modal-legal">
+  <div class="modal-inner">
+    <div class="modal-header">
+      <div><div class="modal-tag">Document légal</div><div class="modal-title">Mentions légales</div></div>
+      <button class="modal-close" id="close-legal">✕ Fermer</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:32px;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#C8F400; margin-bottom:12px;">1. Éditeur du site</div>
+        <p>Le site <strong style="color:#F0EDE6;">n3xt-records.com</strong> est édité par la société <strong style="color:#F0EDE6;">N3XT Records</strong>, SAS en cours d'immatriculation au RCS de Paris.<br><br>
+        <strong style="color:#F0EDE6;">Siège social :</strong> Paris, 20e arrondissement<br>
+        <strong style="color:#F0EDE6;">Contact :</strong> contact@n3xt-records.com</p>
+      </div>
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding-top:28px; margin-bottom:32px;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#C8F400; margin-bottom:12px;">2. Hébergement</div>
+        <p>Vercel Inc., 340 Pine Street, Suite 701, San Francisco, CA 94104, États-Unis.</p>
+      </div>
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding-top:28px; margin-bottom:32px;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#C8F400; margin-bottom:12px;">3. Propriété intellectuelle</div>
+        <p>L'ensemble des éléments du site est la propriété exclusive de N3XT Records. La marque <strong style="color:#F0EDE6;">N3XT</strong> est déposée ou en cours de dépôt à l'INPI. Toute reproduction non autorisée est interdite.</p>
+      </div>
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding-top:28px; margin-bottom:32px;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#C8F400; margin-bottom:12px;">4. Protection des données (RGPD)</div>
+        <p>Les données personnelles collectées sont utilisées uniquement à des fins de vérification d'identité et de gestion contractuelle. Droit d'accès : <strong style="color:#F0EDE6;">privacy@n3xt-records.com</strong></p>
+      </div>
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding-top:28px; margin-bottom:32px;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#C8F400; margin-bottom:12px;">5. Cookies</div>
+        <p>Ce site n'utilise pas de cookies publicitaires ou de traçage.</p>
+      </div>
+      <div style="border-top:1px solid rgba(240,237,230,0.06); padding-top:28px;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:#C8F400; margin-bottom:12px;">6. Droit applicable</div>
+        <p>Droit français. Tribunaux compétents de Paris.</p>
+        <p style="margin-top:20px; font-family:'Space Mono',monospace; font-size:0.55rem; letter-spacing:0.15em; color:rgba(240,237,230,0.15); text-transform:uppercase;">Dernière mise à jour : Mai 2026 — N3XT Records</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-const SITE_DATA = {"artists":[{"id":"n3xt","name":"N3XT","type":"Projet label","status":"Album preview","year":"2026","style":"AI music / Rap / Pop sombre","cover":"assets/images/280df0d804d297a1.png","album":"N3XT PART 1","subtitle":"Human x AI - Music AI - Paris","description":"N3XT est le premier projet vitrine du label : une esthétique sombre, futuriste et émotionnelle, pensée pour présenter une nouvelle manière de produire et défendre la musique créée avec l'intelligence artificielle.","tracks":[["Démon","assets/audio/6bf1f9af8076730e.mp3"],["Labyrinthe","assets/audio/7241018ef878ca2c.mp3"],["Désespoir et silence (remix)","assets/audio/77d0b9e66c5604fe.mp3"],["Les ad-lib","assets/audio/666a0aadab9d10e6.mp3"],["Mi-Vida lost","assets/audio/d22589d1a8991eb7.mp3"],["Larmes","assets/audio/948f10e750a7c053.mp3"],["Femme fatale","assets/audio/2dacc7dc3913b42d.m4a"],["Labyrinthe II","assets/audio/dc91397cddd76f46.mp3"],["Norcè (janet)","assets/audio/3578951ed97f1f03.mp3"],["Eclipse","assets/audio/7b571d2cd12b5941.mp3"],["Outro","assets/audio/4c6738b20f6db416.mp3"]]},{"id":"betty","name":"Betty","type":"Artiste du label","status":"Single preview","year":"2026","style":"Chanson française / Alternative indie soul / Neo-soul","cover":"assets/images/02d7bae330380cef.jpg","album":"Quelque chose veille","subtitle":"Human x AI - Chanson française / Alternative indie soul","description":"Betty mélange esthétique mode, énergie punk et émotion synthétique. Un univers froid, agressif et éditorial, construit entre direction artistique humaine et intelligence artificielle.","tracks":[["Quelque chose veille","assets/audio/1b9f7c132db495c2.mp3"]]}]};
-const PREVIEW_LIMIT = 71;
+(function () {
+  'use strict';
 
-const audio = document.getElementById('audio');
-const playerToggle = document.getElementById('playerToggle');
-const playerTitle = document.getElementById('playerTitle');
-const playerMeta = document.getElementById('playerMeta');
-const playerTime = document.getElementById('playerTime');
-const playerProgress = document.getElementById('playerProgress');
-const modal = document.getElementById('artistModal');
-const artistCover = document.getElementById('artistCover');
-const artistName = document.getElementById('artistName');
-const artistSubtitle = document.getElementById('artistSubtitle');
-const artistDescription = document.getElementById('artistDescription');
-const artistAlbum = document.getElementById('artistAlbum');
-const artistYear = document.getElementById('artistYear');
-const artistStyle = document.getElementById('artistStyle');
-const artistTracks = document.getElementById('artistTracks');
-let currentSrc = '';
+  function $(id) { return document.getElementById(id); }
 
-function formatTime(seconds){
-  const safe = Math.max(0, Math.min(PREVIEW_LIMIT, seconds || 0));
-  const m = Math.floor(safe / 60);
-  const s = String(Math.floor(safe % 60)).padStart(2, '0');
-  return m + ':' + s;
-}
-
-function findArtist(id){
-  return SITE_DATA.artists.find((artist) => artist.id === id);
-}
-
-function syncPlayer(){
-  const current = Math.min(audio.currentTime || 0, PREVIEW_LIMIT);
-  playerToggle.textContent = audio.paused ? '▶' : 'Ⅱ';
-  playerTime.textContent = formatTime(current) + ' / 1:11';
-  playerProgress.style.width = ((current / PREVIEW_LIMIT) * 100) + '%';
-  document.querySelectorAll('[data-play].active').forEach((button) => {
-    if (button.dataset.src !== currentSrc || audio.paused) button.classList.remove('active');
-  });
-}
-
-function playTrack(track){
-  if (!track.src) return;
-  if (currentSrc !== track.src) {
-    currentSrc = track.src;
-    audio.src = track.src;
-    audio.currentTime = 0;
-    playerTitle.textContent = track.title;
-    playerMeta.textContent = track.artist + ' - preview 1:11';
-  }
-  document.querySelectorAll('[data-play].active').forEach((button) => button.classList.remove('active'));
-  document.querySelectorAll('[data-play]').forEach((button) => {
-    if (button.dataset.src === track.src) button.classList.add('active');
-  });
-  audio.play().catch(syncPlayer);
-  syncPlayer();
-}
-
-function openArtist(id){
-  const artist = findArtist(id);
-  if (!artist) return;
-  artistCover.src = artist.cover;
-  artistCover.alt = artist.name;
-  artistName.textContent = artist.name;
-  artistSubtitle.textContent = artist.subtitle;
-  artistDescription.textContent = artist.description;
-  artistAlbum.textContent = artist.album;
-  artistYear.textContent = artist.year;
-  artistStyle.textContent = artist.style;
-  artistTracks.innerHTML = artist.tracks.map(([title, src], index) => `
-    <button class="track-row" type="button" data-play data-artist="${artist.name}" data-title="${title}" data-src="${src}">
-      <span class="num">${String(index + 1).padStart(2, '0')}</span>
-      <span class="play">▶</span>
-      <span class="track-name">${title}</span>
-      <span class="dur">1:11</span>
-    </button>`).join('');
-  modal.classList.add('open');
-  modal.setAttribute('aria-hidden', 'false');
-  document.body.classList.add('modal-open');
-}
-
-function closeArtist(){
-  modal.classList.remove('open');
-  modal.setAttribute('aria-hidden', 'true');
-  document.body.classList.remove('modal-open');
-}
-
-document.addEventListener('click', (event) => {
-  const openButton = event.target.closest('[data-open-artist]');
-  if (openButton) {
-    openArtist(openButton.dataset.openArtist);
-    return;
+  function openModal(id) {
+    var modal = $(id);
+    if (!modal) return;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
 
-  const playButton = event.target.closest('[data-play]');
-  if (playButton) {
-    playTrack({
-      artist: playButton.dataset.artist,
-      title: playButton.dataset.title,
-      src: playButton.dataset.src,
+  function closeModal(id) {
+    var modal = $(id);
+    if (!modal) return;
+    modal.classList.remove('open');
+    var anyOpen = document.querySelector('.modal.open');
+    if (!anyOpen) document.body.style.overflow = '';
+  }
+
+  window.handleSubmit = function () {
+    var input = document.querySelector('.submit-input');
+    var btn = document.querySelector('.submit-btn');
+    if (!input || !btn) return;
+
+    if (input.value && input.value.indexOf('@') !== -1) {
+      btn.textContent = 'Recu !';
+      btn.style.background = '#00F0FF';
+      input.value = '';
+      setTimeout(function () {
+        btn.textContent = 'Soumettre →';
+        btn.style.background = '';
+      }, 3000);
+    } else {
+      input.style.borderColor = '#FF2D55';
+      setTimeout(function () { input.style.borderColor = ''; }, 2000);
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var burger = $('burger');
+    var mobileMenu = $('mobileMenu');
+
+    function closeMenu() {
+      if (burger) burger.classList.remove('open');
+      if (mobileMenu) mobileMenu.classList.remove('open');
+    }
+
+    function bindClick(id, fn) {
+      var el = $(id);
+      if (!el) return;
+      el.addEventListener('click', fn);
+    }
+
+    function bindModalLink(id, modalId) {
+      bindClick(id, function (e) {
+        e.preventDefault();
+        closeMenu();
+        openModal(modalId);
+      });
+    }
+
+    if (burger && mobileMenu) {
+      burger.addEventListener('click', function () {
+        burger.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+      });
+    }
+
+    // Liens du menu mobile
+    bindModalLink('link-mission', 'modal-mission');
+    bindModalLink('link-artists', 'modal-artists');
+    bindModalLink('link-droits', 'modal-droits');
+    bindModalLink('link-contact', 'modal-contact');
+    bindModalLink('link-cta', 'modal-contact');
+    bindModalLink('link-legal', 'modal-legal');
+
+    // Liens du footer en navigation normale, sauf mentions légales qui ouvre la modale
+    bindClick('close-mission', function () { closeModal('modal-mission'); });
+    bindClick('close-artists', function () { closeModal('modal-artists'); });
+    bindClick('close-droits', function () { closeModal('modal-droits'); });
+    bindClick('close-contact', function () { closeModal('modal-contact'); });
+    bindClick('close-legal', function () { closeModal('modal-legal'); });
+
+    bindClick('btn-join-roster', function () {
+      closeModal('modal-artists');
+      openModal('modal-contact');
+    });
+
+    bindClick('modal-btn', function () {
+      var input = $('modal-email');
+      var btn = $('modal-btn');
+      if (!input || !btn) return;
+
+      if (input.value && input.value.indexOf('@') !== -1) {
+        btn.textContent = 'Recu !';
+        btn.style.background = '#00F0FF';
+        input.value = '';
+        setTimeout(function () {
+          btn.textContent = 'Envoyer';
+          btn.style.background = '#C8F400';
+        }, 3000);
+      } else {
+        input.style.borderColor = '#FF2D55';
+        setTimeout(function () { input.style.borderColor = 'rgba(240,237,230,0.1)'; }, 2000);
+      }
+    });
+
+    var submitBtn = document.querySelector('.submit-btn');
+    if (submitBtn) {
+      submitBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.handleSubmit();
+      });
+    }
+
+    document.querySelectorAll('.modal').forEach(function (modal) {
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal(modal.id);
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.open').forEach(function (modal) {
+          closeModal(modal.id);
+        });
+        closeMenu();
+      }
+    });
+
+    // Curseur custom, désactivé si appareil tactile ou si éléments absents
+    var cursor = $('cursor');
+    var ring = $('cursorRing');
+    if (cursor && ring && window.matchMedia && window.matchMedia('(pointer: fine)').matches) {
+      var mx = 0, my = 0, rx = 0, ry = 0;
+      document.addEventListener('mousemove', function (e) {
+        mx = e.clientX;
+        my = e.clientY;
+        cursor.style.left = (mx - 6) + 'px';
+        cursor.style.top = (my - 6) + 'px';
+      });
+      function animRing() {
+        rx += (mx - rx) * 0.12;
+        ry += (my - ry) * 0.12;
+        ring.style.left = (rx - 18) + 'px';
+        ring.style.top = (ry - 18) + 'px';
+        requestAnimationFrame(animRing);
+      }
+      animRing();
+    }
+
+    // Scroll reveal avec fallback si IntersectionObserver absent
+    var reveals = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry, index) {
+          if (entry.isIntersecting) {
+            setTimeout(function () { entry.target.classList.add('visible'); }, index * 80);
+          }
+        });
+      }, { threshold: 0.1 });
+      reveals.forEach(function (el) { obs.observe(el); });
+    } else {
+      reveals.forEach(function (el) { el.classList.add('visible'); });
+    }
+
+    // Counter
+    function animCounter(target, duration) {
+      var el = $('counterNum');
+      if (!el) return;
+      var start = 0;
+      var step = target / (duration / 16);
+      var timer = setInterval(function () {
+        start += step;
+        if (start >= target) {
+          el.textContent = target.toLocaleString('fr-FR');
+          clearInterval(timer);
+        } else {
+          el.textContent = Math.floor(start).toLocaleString('fr-FR');
+        }
+      }, 16);
+    }
+    setTimeout(function () { animCounter(2847, 2000); }, 1400);
+  });
+})();
+</script>
+
+
+<div class="now-playing" id="nowPlaying">
+  <audio id="nowPlayingAudio" preload="none" playsinline></audio>
+
+  <div class="now-playing-label">NOW PLAYING</div>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <button id="nowPlayBtn" type="button" style="width:38px;height:38px;border:1px solid rgba(200,244,0,0.35);background:transparent;color:#C8F400;font-family:'Space Mono',monospace;cursor:pointer;">▶</button>
+    <div>
+      <div id="nowPlayingTitle" style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#F0EDE6;line-height:1;">Aucune preview</div>
+      <div id="nowTime" style="font-family:'Space Mono',monospace;font-size:0.55rem;color:rgba(240,237,230,0.35);margin-top:4px;">—</div>
+    </div>
+  </div>
+
+  <div class="waveform" id="nowWave">
+    <span></span><span></span><span></span>
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
+<script>
+(function(){
+  function formatTime(seconds){
+    if(!isFinite(seconds)) return '0:00';
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60).toString().padStart(2,'0');
+    return m + ':' + s;
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const audio = document.getElementById('mainAudio');
+    const btn = document.getElementById('nowPlayBtn');
+    const time = document.getElementById('nowTime');
+    const wave = document.getElementById('nowWave');
+
+    if(!audio || !btn) return;
+
+    btn.addEventListener('click', function(){
+      if(audio.paused){
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    });
+
+    audio.addEventListener('play', function(){
+      btn.textContent = 'Ⅱ';
+      if(wave) wave.style.opacity = '1';
+    });
+
+    audio.addEventListener('pause', function(){
+      btn.textContent = '▶';
+      if(wave) wave.style.opacity = '0.45';
+    });
+
+    audio.addEventListener('timeupdate', function(){
+      if(time){
+        time.textContent = formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration || 60);
+      }
+    });
+  });
+})();
+</script>
+
+<!-- ARTIST PAGE — N3XT -->
+<div class="artist-page-modal" id="artistPageN3XT">
+  <button class="artist-page-close" id="artistPageClose">✕ Fermer</button>
+
+  <div class="artist-page-inner">
+    <div class="artist-profile-grid">
+      <div>
+        <img class="artist-profile-cover betty-profile-cover" src="assets/images/280df0d804d297a1.png" alt="Cover N3XT PART 1">
+      </div>
+
+      <div class="artist-profile-info">
+        <canvas class="artist-spectrum" data-artist-spectrum="true" aria-hidden="true"></canvas>
+        <div class="artist-profile-tag">Premier artiste du label</div>
+        <h1 class="artist-profile-name">N3XT</h1>
+        <div class="artist-profile-sub">Human × AI — Dark Alternative / Trap / R&B</div>
+
+        <p class="artist-profile-desc">
+          N3XT est le premier artiste-projet du label. Une identité hybride portée par une direction humaine,
+          où l'intelligence artificielle devient instrument, texture et prolongement émotionnel. PART I ouvre
+          un univers sombre, sacré et cinématographique, entre confession, trap mélancolique et R&B nocturne.
+        </p>
+
+        <div class="artist-meta-grid">
+          <div class="artist-meta-item">
+            <div class="artist-meta-label">Catégorie</div>
+            <div class="artist-meta-value">Co-production Humain × AI</div>
+          </div>
+          <div class="artist-meta-item">
+            <div class="artist-meta-label">Année</div>
+            <div class="artist-meta-value">2026</div>
+          </div>
+          <div class="artist-meta-item">
+            <div class="artist-meta-label">Projet</div>
+            <div class="artist-meta-value">PART I</div>
+          </div>
+          <div class="artist-meta-item">
+            <div class="artist-meta-label">Style</div>
+            <div class="artist-meta-value">Dark Alternative · Trap · R&B</div>
+          </div>
+          <div class="artist-meta-item">
+            <div class="artist-meta-label">Label</div>
+            <div class="artist-meta-value">N3XT Records</div>
+          </div>
+          <div class="artist-meta-item">
+            <div class="artist-meta-label">Extrait</div>
+            <div class="artist-meta-value">1 min 11 sec</div>
+          </div>
+        </div>
+
+        <div class="tracklist">
+          <div class="track-row" data-title="N3XT — Démon" data-audio="assets/audio/6bf1f9af8076730e.mp3">
+            <div class="track-num hover-play" data-title="N3XT — Démon">
+              <span class="track-number">01</span>
+              <button class="track-play-btn" type="button">▶</button>
+            </div>
+            <div class="track-title">Démon</div>
+            <div class="track-duration">1:11</div>
+          </div>
+          <div class="track-row" data-title="N3XT — Labyrinthe" data-audio="assets/audio/7241018ef878ca2c.mp3">
+            <div class="track-num hover-play" data-title="N3XT — Labyrinthe">
+              <span class="track-number">02</span>
+              <button class="track-play-btn" type="button">▶</button>
+            </div>
+            <div class="track-title">Labyrinthe</div>
+            <div class="track-duration">1:11</div>
+          </div>
+          <div class="track-row" data-title="N3XT — Désespoir et silence (remix)" data-audio="assets/audio/77d0b9e66c5604fe.mp3">
+            <div class="track-num hover-play" data-title="N3XT — Désespoir et silence (remix)">
+              <span class="track-number">03</span>
+              <button class="track-play-btn" type="button">▶</button>
+            </div>
+            <div class="track-title">Désespoir et silence (remix)</div>
+            <div class="track-duration">1:11</div>
+          </div>
+          <div class="track-row" data-title="N3XT — Les ad-lib" data-audio="assets/audio/666a0aadab9d10e6.mp3">
+            <div class="track-num hover-play" data-title="N3XT — Les ad-lib">
+              <span class="track-number">04</span>
+              <button class="track-play-btn" type="button">▶</button>
+            </div>
+            <div class="track-title">Les ad-lib</div>
+            <div class="track-duration">1:11</div>
+          </div>
+          <div class="track-row" data-title="N3XT — Mi-Vida lost" data-audio="assets/audio/d22589d1a8991eb7.mp3">
+            <div class="track-num hover-play" data-title="N3XT — Mi-Vida lost">
+              <span class="track-number">05</span>
+              <button class="track-play-btn" type="button">▶</button>
+            </div>
+            <div class="track-title">Mi-Vida lost</div>
+            <div class="track-duration">1:11</div>
+          </div>
+          <div class="track-row" data-title="N3XT — Larmes" data-audio="assets/audio/948f10e750a7c053.mp3">
+            <div class="track-num hover-play" data-title="N3XT — Larmes">
+              <span class="track-number">06</span>
+              <button class="track-play-btn" type="button">▶</button>
+            </div>
+            <div class="track-title">Larmes</div>
+            <div class="track-duration">1:11</div>
+          </div>
+          <div class="track-row" data-title="N3XT — Femme fatale" data-audio="assets/audio/2dacc7dc3913b42d.m4a">
+            <div class="track-num hover-play" data-title="N3XT — Femme fatale">
+              <span class="track-number">07</span>
+              <button class="track-play-btn" type="button">▶</button>
+            </div>
+            <div class="track-title">Femme fatale</div>
+            <div class="track-duration">1:11</div>
+          </div>
+          <div class="track-row" data-title="N3XT — Labyrinthe II" data-audio="assets/audio/dc91397cddd76f46.mp3">
+            <div class="track-num hover-play" data-title="N3XT — Labyrinthe II">
+              <span class="track-number">08</span>
+              <button class="track-play-btn" type="button">▶</button>
+            </div>
+            <div class="track-title">Labyrinthe II</div>
+            <div class="track-duration">1:11</div>
+          </div>
+          <div class="track-row" data-title="N3XT — Norcè (janet)" data-audio="assets/audio/3578951ed97f1f03.mp3">
+            <div class="track-num hover-play" data-title="N3XT — Norcè (janet)">
+              <span class="track-number">09</span>
+              <button class="track-play-btn" type="button">▶</button>
+            </div>
+            <div class="track-title">Norcè (janet)</div>
+            <div class="track-duration">1:11</div>
+          </div>
+          <div class="track-row" data-title="N3XT — Eclipse" data-audio="assets/audio/7b571d2cd12b5941.mp3">
+            <div class="track-num hover-play" data-title="N3XT — Eclipse">
+              <span class="track-number">10</span>
+              <button class="track-play-btn" type="button">▶</button>
+            </div>
+            <div class="track-title">Eclipse</div>
+            <div class="track-duration">1:11</div>
+          </div>
+          <div class="track-row" data-title="N3XT — Outro" data-audio="assets/audio/4c6738b20f6db416.mp3">
+            <div class="track-num hover-play" data-title="N3XT — Outro">
+              <span class="track-number">11</span>
+              <button class="track-play-btn" type="button">▶</button>
+            </div>
+            <div class="track-title">Outro</div>
+            <div class="track-duration">1:11</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+(function(){
+  document.addEventListener('DOMContentLoaded', function(){
+    const card = document.getElementById('artist-n3xt-card');
+    const modal = document.getElementById('artistPageN3XT');
+    const close = document.getElementById('artistPageClose');
+    
+    
+
+    function openArtist(){
+      
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeArtist(){
+      
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    if(card && modal) card.addEventListener('click', openArtist);
+
+    const latestReleaseCard = document.querySelector('.release-card[data-artist-target="n3xt"]');
+    if(latestReleaseCard && modal){
+      latestReleaseCard.addEventListener('click', function(e){
+        if(e.target.closest('button, a, audio')) return;
+        openArtist();
+      });
+
+      latestReleaseCard.addEventListener('keydown', function(e){
+        if(e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        openArtist();
+      });
+    }
+    if(close) close.addEventListener('click', closeArtist);
+
+    if(modal){
+      modal.addEventListener('click', function(e){
+        if(e.target === modal) closeArtist();
+      });
+    }
+
+    const repeatOneBtn = document.getElementById('repeatOneBtn');
+    const repeatAllBtn = document.getElementById('repeatAllBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+
+    let repeatMode = 'none';
+    let shuffleMode = false;
+
+    function clearRepeatButtons(){
+      if(repeatOneBtn) repeatOneBtn.classList.remove('active');
+      if(repeatAllBtn) repeatAllBtn.classList.remove('active');
+    }
+
+    if(repeatOneBtn){
+      repeatOneBtn.addEventListener('click', function(){
+        repeatMode = repeatMode === 'one' ? 'none' : 'one';
+        clearRepeatButtons();
+        if(repeatMode === 'one') repeatOneBtn.classList.add('active');
+      });
+    }
+
+    if(repeatAllBtn){
+      repeatAllBtn.addEventListener('click', function(){
+        repeatMode = repeatMode === 'all' ? 'none' : 'all';
+        clearRepeatButtons();
+        if(repeatMode === 'all') repeatAllBtn.classList.add('active');
+      });
+    }
+
+    if(shuffleBtn){
+      shuffleBtn.addEventListener('click', function(){
+        shuffleMode = !shuffleMode;
+        shuffleBtn.classList.toggle('active', shuffleMode);
+      });
+    }
+
+    if(typeof pageAudio !== 'undefined' && pageAudio){
+      pageAudio.addEventListener('ended', function(){
+        if(repeatMode === 'one' || repeatMode === 'all' || shuffleMode){
+          pageAudio.currentTime = 0;
+          pageAudio.play();
+        }
+      });
+    }
+
+    ['likeBtn','dislikeBtn','heartBtn','starBtn'].forEach(function(id){
+      const btn = document.getElementById(id);
+      if(btn){
+        btn.addEventListener('click', function(e){
+          e.stopPropagation();
+          btn.classList.toggle('active');
+        });
+      }
+    });
+  });
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="artist-page-modal" id="artistPageBetty">
+  <button class="artist-page-close" id="artistPageBettyClose">✕ Fermer</button>
+
+  <div class="artist-page-inner">
+    <div class="artist-profile-grid">
+      <div>
+        <img class="artist-profile-cover" src="assets/images/02d7bae330380cef.jpg" alt="Betty" style="object-fit:contain !important; filter:none !important; background:#050505;">
+      </div>
+
+      <div>
+        <div class="artist-profile-tag">Artiste du label</div>
+        <h1 class="artist-profile-name">Betty</h1>
+        <div class="artist-profile-sub">Human × AI — Chanson Française / Alternative Indie Soul / Neo-Soul</div>
+
+        <p class="artist-profile-desc">
+          Betty mélange esthétique mode, énergie punk et émotion synthétique.
+          Un univers froid, agressif et éditorial, construit entre direction artistique humaine
+          et intelligence artificielle.
+        </p>
+
+        <div class="artist-meta-grid">
+          <div class="artist-meta-item">
+            <div class="artist-meta-label">Catégorie</div>
+            <div class="artist-meta-value">Co-production Humain × AI</div>
+          </div>
+          <div class="artist-meta-item">
+            <div class="artist-meta-label">Année</div>
+            <div class="artist-meta-value">2026</div>
+          </div>
+          <div class="artist-meta-item">
+            <div class="artist-meta-label">Projet</div>
+            <div class="artist-meta-value">Quelque chose veille</div>
+          </div>
+          <div class="artist-meta-item">
+            <div class="artist-meta-label">Style</div>
+            <div class="artist-meta-value">Chanson Française · Alternative Indie Soul · Neo-Soul</div>
+          </div>
+        </div>
+
+        <div class="tracklist">
+          <div class="track-row" data-title="Betty — Quelque chose veille" data-audio="assets/audio/1b9f7c132db495c2.mp3">
+            <div class="track-num hover-play">
+              <span class="track-number">01</span>
+              <button class="track-play-btn" type="button">▶</button>
+            </div>
+            <div class="track-title">Quelque chose veille</div>
+            <div class="track-duration">1:11</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+(function(){
+  document.addEventListener('DOMContentLoaded', function(){
+    const card = document.getElementById('artist-betty-card');
+    const modal = document.getElementById('artistPageBetty');
+    const close = document.getElementById('artistPageBettyClose');
+
+    if(card && modal){
+      card.addEventListener('click', function(){
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    }
+
+    if(close && modal){
+      close.addEventListener('click', function(){
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    }
+
+    if(modal){
+      modal.addEventListener('click', function(e){
+        if(e.target === modal){
+          modal.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.artist-card, .artist-plus').forEach(function(card){
+      card.addEventListener('mousemove', function(e){
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - .5;
+        const y = (e.clientY - rect.top) / rect.height - .5;
+        card.style.transform = 'translateY(-8px) rotateX(' + (-y * 8) + 'deg) rotateY(' + (x * 8) + 'deg)';
+      });
+      card.addEventListener('mouseleave', function(){
+        card.style.transform = '';
+      });
+    });
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  document.addEventListener('DOMContentLoaded', function(){
+    function smoothCloseToCard(modal){
+      if(!modal || modal.classList.contains('closing-to-card')) return;
+
+      modal.classList.add('closing-to-card');
+      modal.classList.remove('open');
+
+      window.setTimeout(function(){
+        modal.classList.remove('closing-to-card');
+        document.body.style.overflow = '';
+      }, 1380);
+    }
+
+    document.querySelectorAll('.artist-page-close').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        const modal = btn.closest('.artist-page-modal');
+        if(!modal) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        smoothCloseToCard(modal);
+      }, true);
+    });
+
+    document.querySelectorAll('.artist-page-modal').forEach(function(modal){
+      modal.addEventListener('click', function(e){
+        if(e.target === modal){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          smoothCloseToCard(modal);
+        }
+      }, true);
+    });
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  document.addEventListener('DOMContentLoaded', function(){
+    function dustClose(modal){
+      if(!modal || modal.classList.contains('closing-dust')) return;
+
+      modal.classList.add('closing-dust');
+      modal.classList.remove('open');
+
+      window.setTimeout(function(){
+        modal.classList.remove('closing-dust');
+        document.body.style.overflow = '';
+      }, 1700);
+    }
+
+    document.querySelectorAll('.artist-page-close').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        const modal = btn.closest('.artist-page-modal');
+        if(!modal) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        dustClose(modal);
+      }, true);
+    });
+
+    document.querySelectorAll('.artist-page-modal').forEach(function(modal){
+      modal.addEventListener('click', function(e){
+        if(e.target === modal){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          dustClose(modal);
+        }
+      }, true);
+    });
+  });
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+(function(){
+  const PREVIEW_LIMIT = 71;
+  const BAR_COUNT = 44;
+  let currentSrc = '';
+  let raf = 0;
+  let audioContext = null;
+  let analyser = null;
+  let data = null;
+  let sourceCreated = false;
+
+  function formatTime(seconds){
+    seconds = Math.max(0, Math.min(PREVIEW_LIMIT, seconds || 0));
+    const m = Math.floor(seconds / 60);
+    const s = String(Math.floor(seconds % 60)).padStart(2, '0');
+    return m + ':' + s;
+  }
+
+  function getAudio(){
+    return document.getElementById('nowPlayingAudio');
+  }
+
+  function getSource(audio){
+    let source = audio.querySelector('source');
+    if(!source){
+      source = document.createElement('source');
+      source.type = 'audio/mpeg';
+      audio.appendChild(source);
+    }
+    return source;
+  }
+
+  function activeButtons(){
+    return document.querySelectorAll('.track-play-btn.active, .latest-preview-btn.active');
+  }
+
+  function setActive(src, active){
+    activeButtons().forEach(function(btn){ btn.classList.remove('active'); });
+    if(!active) return;
+    document.querySelectorAll('.track-row[data-audio], .latest-preview-btn[data-audio]').forEach(function(item){
+      if(item.getAttribute('data-audio') !== src) return;
+      if(item.classList.contains('track-row')){
+        const btn = item.querySelector('.track-play-btn');
+        if(btn) btn.classList.add('active');
+      }else{
+        item.classList.add('active');
+      }
     });
   }
-});
 
-document.getElementById('closeArtist').addEventListener('click', closeArtist);
-modal.addEventListener('click', (event) => {
-  if (event.target === modal) closeArtist();
-});
+  function syncUI(){
+    const audio = getAudio();
+    if(!audio) return;
+    const btn = document.getElementById('nowPlayBtn');
+    const time = document.getElementById('nowTime');
+    const title = document.getElementById('nowPlayingTitle');
+    const progress = document.getElementById('nowPlayingProgressBar');
+    const current = Math.min(audio.currentTime || 0, PREVIEW_LIMIT);
 
-playerToggle.addEventListener('click', () => {
-  if (!currentSrc) return;
-  if (audio.paused) audio.play().catch(syncPlayer);
-  else audio.pause();
-  syncPlayer();
-});
-
-audio.addEventListener('timeupdate', () => {
-  if (audio.currentTime >= PREVIEW_LIMIT) {
-    audio.pause();
-    audio.currentTime = PREVIEW_LIMIT;
+    if(btn) btn.textContent = audio.paused ? '▶' : 'Ⅱ';
+    if(time) time.textContent = formatTime(current) + ' / 1:11';
+    if(progress) progress.style.width = ((current / PREVIEW_LIMIT) * 100) + '%';
+    if(title && !currentSrc) title.textContent = 'Aucune preview';
+    setActive(currentSrc, !audio.paused && !!currentSrc);
   }
-  syncPlayer();
-});
-['play','pause','ended','loadedmetadata','stalled','suspend','abort','error'].forEach((name) => {
-  audio.addEventListener(name, syncPlayer);
-});
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) window.setTimeout(syncPlayer, 120);
-});
-window.addEventListener('pageshow', syncPlayer);
 
-const cursor = document.getElementById('cursor');
-const ring = document.getElementById('cursorRing');
-if (cursor && ring && matchMedia('(pointer:fine)').matches) {
-  window.addEventListener('mousemove', (event) => {
-    cursor.style.transform = 'translate(' + (event.clientX - 6) + 'px,' + (event.clientY - 6) + 'px)';
-    ring.style.transform = 'translate(' + (event.clientX - 19) + 'px,' + (event.clientY - 19) + 'px)';
-  }, { passive: true });
-}
+  function setupAudioGraph(){
+    const audio = getAudio();
+    if(!audio || sourceCreated) return;
+    try{
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if(!AudioContextClass) return;
+      audioContext = new AudioContextClass();
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = 128;
+      analyser.smoothingTimeConstant = .84;
+      data = new Uint8Array(analyser.frequencyBinCount);
+      const source = audioContext.createMediaElementSource(audio);
+      source.connect(analyser);
+      analyser.connect(audioContext.destination);
+      sourceCreated = true;
+    }catch(error){
+      analyser = null;
+      data = null;
+    }
+  }
 
-document.querySelector('.submit-form').addEventListener('submit', (event) => {
-  event.preventDefault();
-});
+  function drawSpectrum(time){
+    const modalOpen = document.querySelector('.artist-page-modal.open');
+    const canvases = modalOpen ? modalOpen.querySelectorAll('.artist-spectrum') : [];
+    if(!canvases.length){
+      raf = 0;
+      return;
+    }
+
+    const audio = getAudio();
+    const values = new Array(BAR_COUNT);
+    if(analyser && data && audio && !audio.paused){
+      analyser.getByteFrequencyData(data);
+      for(let i = 0; i < BAR_COUNT; i++){
+        const idx = Math.min(data.length - 1, Math.floor(i * data.length / BAR_COUNT));
+        values[i] = data[idx] / 255;
+      }
+    }else{
+      for(let i = 0; i < BAR_COUNT; i++){
+        values[i] = .18 + Math.abs(Math.sin(time * .0014 + i * .42)) * .42;
+      }
+    }
+
+    canvases.forEach(function(canvas){
+      const rect = canvas.getBoundingClientRect();
+      if(rect.width <= 0 || rect.height <= 0) return;
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.floor(rect.width * ratio);
+      const height = Math.floor(rect.height * ratio);
+      if(canvas.width !== width || canvas.height !== height){
+        canvas.width = width;
+        canvas.height = height;
+      }
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+      ctx.clearRect(0,0,rect.width,rect.height);
+      const gap = 4;
+      const barW = Math.max(3, (rect.width - gap * (BAR_COUNT - 1)) / BAR_COUNT);
+      const base = rect.height * .76;
+      const gradient = ctx.createLinearGradient(0, 0, 0, rect.height);
+      gradient.addColorStop(0, 'rgba(0,240,255,.78)');
+      gradient.addColorStop(.45, 'rgba(200,244,0,.82)');
+      gradient.addColorStop(1, 'rgba(255,45,85,.36)');
+      ctx.fillStyle = gradient;
+      ctx.shadowColor = 'rgba(200,244,0,.26)';
+      ctx.shadowBlur = 14;
+      for(let i = 0; i < BAR_COUNT; i++){
+        const h = 20 + values[i] * rect.height * .66;
+        const x = i * (barW + gap);
+        ctx.fillRect(x, base - h * .5, barW, h);
+      }
+    });
+
+    raf = requestAnimationFrame(drawSpectrum);
+  }
+
+  function startSpectrum(){
+    if(!raf) raf = requestAnimationFrame(drawSpectrum);
+  }
+
+  function playPreview(src, title){
+    const audio = getAudio();
+    if(!audio || !src) return;
+    const source = getSource(audio);
+
+    setupAudioGraph();
+    if(audioContext && audioContext.state === 'suspended'){
+      audioContext.resume();
+    }
+
+    if(currentSrc !== src){
+      currentSrc = src;
+      source.setAttribute('src', src);
+      audio.load();
+      audio.currentTime = 0;
+    }else if(audio.currentTime >= PREVIEW_LIMIT){
+      audio.currentTime = 0;
+    }
+
+    const titleEl = document.getElementById('nowPlayingTitle');
+    if(titleEl) titleEl.textContent = title || 'Preview';
+
+    audio.play().catch(syncUI);
+    startSpectrum();
+    syncUI();
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const audio = getAudio();
+    if(!audio) return;
+    audio.setAttribute('preload', 'none');
+    audio.setAttribute('playsinline', '');
+    const source = audio.querySelector('source');
+    if(source) source.removeAttribute('src');
+    audio.removeAttribute('src');
+
+    const player = document.getElementById('nowPlaying');
+    if(player && !document.getElementById('nowPlayingProgressBar')){
+      const progress = document.createElement('div');
+      progress.className = 'now-playing-progress';
+      progress.innerHTML = '<span id="nowPlayingProgressBar"></span>';
+      player.appendChild(progress);
+    }
+
+    document.addEventListener('click', function(event){
+      const latestBtn = event.target.closest('.latest-preview-btn[data-audio]');
+      const trackBtn = event.target.closest('.track-play-btn');
+      const row = trackBtn ? trackBtn.closest('.track-row[data-audio]') : null;
+      const target = latestBtn || row;
+      if(!target) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      const src = target.getAttribute('data-audio');
+      const title = target.getAttribute('data-title') || (row && row.getAttribute('data-title')) || 'Preview';
+      const same = currentSrc === src;
+      if(same && !audio.paused){
+        audio.pause();
+        syncUI();
+        return;
+      }
+      playPreview(src, title);
+    }, true);
+
+    const nowBtn = document.getElementById('nowPlayBtn');
+    if(nowBtn){
+      nowBtn.addEventListener('click', function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        if(!currentSrc) return;
+        if(audio.paused){
+          audio.play().catch(syncUI);
+          startSpectrum();
+        }else{
+          audio.pause();
+        }
+        syncUI();
+      });
+    }
+
+    audio.addEventListener('timeupdate', function(){
+      if(audio.currentTime >= PREVIEW_LIMIT){
+        audio.pause();
+        audio.currentTime = PREVIEW_LIMIT;
+      }
+      syncUI();
+    });
+
+    ['play','pause','ended','loadedmetadata','stalled','suspend','abort','error'].forEach(function(name){
+      audio.addEventListener(name, syncUI);
+    });
+
+    document.querySelectorAll('.artist-page-modal').forEach(function(modal){
+      new MutationObserver(function(){
+        if(modal.classList.contains('open')) startSpectrum();
+      }).observe(modal, {attributes:true, attributeFilter:['class']});
+    });
+
+    document.addEventListener('visibilitychange', function(){
+      if(!document.hidden){
+        window.setTimeout(syncUI, 120);
+      }
+    });
+    window.addEventListener('pageshow', syncUI);
+    window.addEventListener('focus', syncUI);
+
+    syncUI();
+  });
+})();
 </script>
+
 </body>
+
 </html>
