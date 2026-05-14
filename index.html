@@ -3033,6 +3033,40 @@ body:has(.artist-modal.open) .cursor-ring{
   }
 }
 
+/* ===== ARTIST PAGE INFO + COVER POSITION TUNE ===== */
+.artist-modal{
+  padding-top:26px !important;
+}
+
+.artist-modal.open .artist-layout{
+  height:calc(100vh - 148px) !important;
+  height:calc(100svh - 148px) !important;
+}
+
+.artist-modal.open .artist-cover{
+  top:calc(82px + env(safe-area-inset-top)) !important;
+}
+
+.artist-modal.open .artist-info{
+  height:calc(100vh - 148px) !important;
+  height:calc(100svh - 148px) !important;
+  padding-top:34px !important;
+}
+
+@media(max-width:900px){
+  .artist-modal{
+    padding-top:72px !important;
+  }
+
+  .artist-modal.open .artist-cover{
+    top:72px !important;
+  }
+
+  .artist-modal.open .artist-info{
+    padding-top:0 !important;
+  }
+}
+
 </style>
 </head>
 <body>
