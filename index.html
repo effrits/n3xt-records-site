@@ -3067,6 +3067,77 @@ body:has(.artist-modal.open) .cursor-ring{
   }
 }
 
+/* ===== ARTIST FIRST SCREEN VISIBILITY TUNE ===== */
+.artist-modal{
+  padding-top:18px !important;
+}
+
+.artist-modal.open .artist-layout{
+  height:calc(100vh - 112px) !important;
+  height:calc(100svh - 112px) !important;
+}
+
+.artist-modal.open .artist-cover{
+  top:calc(54px + env(safe-area-inset-top)) !important;
+}
+
+.artist-modal.open .artist-info{
+  height:calc(100vh - 112px) !important;
+  height:calc(100svh - 112px) !important;
+  padding-top:18px !important;
+}
+
+.artist-modal.open .artist-info h2{
+  font-size:clamp(4.4rem,8.2vw,7.2rem) !important;
+  line-height:.82 !important;
+}
+
+.artist-modal.open .artist-sub{
+  margin:12px 0 14px !important;
+}
+
+.artist-modal.open .artist-desc{
+  line-height:1.5 !important;
+  margin:0 !important;
+}
+
+.artist-modal.open .meta-grid{
+  margin:18px 0 18px !important;
+}
+
+.artist-modal.open .meta-item{
+  padding:14px 16px !important;
+}
+
+.artist-modal.open ~ .player,
+.player{
+  background:transparent !important;
+  border-top:0 !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  pointer-events:none !important;
+}
+
+.player button,
+.player .player-main,
+.player .time{
+  pointer-events:auto !important;
+}
+
+@media(max-width:900px){
+  .artist-modal{
+    padding-top:68px !important;
+  }
+
+  .artist-modal.open .artist-cover{
+    top:68px !important;
+  }
+
+  .artist-modal.open .artist-info h2{
+    font-size:clamp(3.9rem,18vw,6rem) !important;
+  }
+}
+
 </style>
 </head>
 <body>
