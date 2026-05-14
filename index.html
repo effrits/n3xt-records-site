@@ -2995,6 +2995,44 @@ body:has(.artist-modal.open) .cursor-ring{
   }
 }
 
+
+
+/* ===== ONLY CLOSE BUTTON SPACE FIX ===== */
+.artist-modal{
+  padding-top:42px !important;
+}
+
+.artist-modal .modal-close{
+  position:fixed !important;
+  top:18px !important;
+  right:clamp(18px,4vw,48px) !important;
+  z-index:2147483001 !important;
+  background:rgba(5,5,5,.18) !important;
+  border:1px solid rgba(240,237,230,.12) !important;
+  color:rgba(240,237,230,.72) !important;
+  backdrop-filter:blur(8px);
+  padding:9px 12px !important;
+  min-width:0 !important;
+  min-height:0 !important;
+}
+
+.artist-modal .modal-close:hover{
+  color:#C8F400 !important;
+  border-color:rgba(200,244,0,.45) !important;
+  background:rgba(5,5,5,.42) !important;
+}
+
+@media(max-width:900px){
+  .artist-modal{
+    padding-top:34px !important;
+  }
+
+  .artist-modal .modal-close{
+    top:12px !important;
+    right:14px !important;
+  }
+}
+
 </style>
 </head>
 <body>
