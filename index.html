@@ -2887,7 +2887,9 @@ select{
 /* ===== ONLY REQUESTED FIXES: CURSOR + TRACKLIST + FIXED PHOTO ===== */
 body:has(.artist-modal.open) .cursor,
 body:has(.artist-modal.open) .cursor-ring{
-  display:none !important;
+  display:block !important;
+  opacity:1 !important;
+  visibility:visible !important;
 }
 
 .artist-modal,
@@ -3191,6 +3193,23 @@ body:has(.artist-modal.open) .cursor-ring{
 
 .player .progress{
   background:rgba(240,237,230,.1) !important;
+}
+
+@media(pointer:fine){
+  body:has(.artist-modal.open),
+  body:has(.artist-modal.open) *{
+    cursor:none !important;
+  }
+
+  body:has(.artist-modal.open) .cursor,
+  body:has(.artist-modal.open) .cursor-ring{
+    position:fixed !important;
+    display:block !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:none !important;
+    transform:none !important;
+  }
 }
 
 </style>
