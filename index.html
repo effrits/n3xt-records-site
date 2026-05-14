@@ -2882,6 +2882,119 @@ select{
   grid-template-columns:42px 42px 1fr 54px !important;
 }
 
+
+
+/* ===== ONLY REQUESTED FIXES: CURSOR + TRACKLIST + FIXED PHOTO ===== */
+body:has(.artist-modal.open) .cursor,
+body:has(.artist-modal.open) .cursor-ring{
+  display:none !important;
+}
+
+.artist-modal,
+.artist-modal *,
+.player,
+.player *{
+  cursor:auto !important;
+}
+
+.artist-modal button,
+.artist-modal [data-play],
+.player button{
+  cursor:pointer !important;
+}
+
+@media(pointer:coarse){
+  .cursor,
+  .cursor-ring{
+    display:none !important;
+  }
+}
+
+.artist-modal.open{
+  overflow:hidden !important;
+}
+
+.artist-modal.open .artist-layout{
+  height:calc(100vh - 206px) !important;
+  height:calc(100svh - 206px) !important;
+  overflow:visible !important;
+}
+
+.artist-modal.open .artist-side{
+  position:relative !important;
+  min-height:min(430px, 32vw) !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+}
+
+.artist-modal.open .artist-cover{
+  position:fixed !important;
+  left:max(48px, calc((100vw - 1180px) / 2)) !important;
+  top:calc(112px + env(safe-area-inset-top)) !important;
+  width:min(430px, 32vw) !important;
+  height:min(430px, 32vw) !important;
+  max-width:430px !important;
+  max-height:430px !important;
+  z-index:0 !important;
+  object-fit:cover !important;
+  transform:none !important;
+  animation:none !important;
+  filter:none !important;
+}
+
+.artist-modal.open .artist-info{
+  position:relative !important;
+  z-index:1 !important;
+  height:calc(100vh - 206px) !important;
+  height:calc(100svh - 206px) !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  opacity:1 !important;
+  visibility:visible !important;
+}
+
+.artist-modal.open .tracklist,
+.artist-modal.open .track-row,
+.artist-modal.open .track-name,
+.artist-modal.open .num,
+.artist-modal.open .play,
+.artist-modal.open .dur{
+  opacity:1 !important;
+  visibility:visible !important;
+  transform:none !important;
+  filter:none !important;
+}
+
+.artist-modal.open .tracklist{
+  display:block !important;
+}
+
+.artist-modal.open .track-row{
+  display:grid !important;
+  grid-template-columns:42px 42px minmax(0,1fr) 54px !important;
+}
+
+@media(max-width:900px){
+  .artist-modal.open{
+    overflow:auto !important;
+  }
+
+  .artist-modal.open .artist-layout,
+  .artist-modal.open .artist-info{
+    height:auto !important;
+    overflow:visible !important;
+  }
+
+  .artist-modal.open .artist-cover{
+    position:sticky !important;
+    left:auto !important;
+    top:92px !important;
+    width:100% !important;
+    height:auto !important;
+  }
+}
+
 </style>
 </head>
 <body>
