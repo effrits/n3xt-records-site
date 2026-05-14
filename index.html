@@ -2405,6 +2405,431 @@ select{
   opacity:.46;
 }
 
+
+
+/* ===== FIXED ARTIST PAGE FINAL OVERRIDE ===== */
+.artist-page-modal.open,
+.artist-page-modal.open .artist-page-inner,
+.artist-page-modal.open .artist-profile-grid{
+  transform:none !important;
+}
+
+.artist-page-modal.open .artist-page-inner{
+  animation:none !important;
+}
+
+.artist-page-modal.open .artist-profile-grid > div:first-child{
+  position:relative !important;
+  min-height:min(430px, 32vw) !important;
+}
+
+@media(min-width:901px){
+  .artist-page-modal.open .artist-profile-grid > div:first-child .artist-profile-cover{
+    position:fixed !important;
+    left:max(48px, calc((100vw - 1180px) / 2)) !important;
+    top:calc(112px + env(safe-area-inset-top)) !important;
+    width:min(430px, 32vw) !important;
+    max-width:430px !important;
+    z-index:5 !important;
+    transform:none !important;
+    animation:none !important;
+    will-change:auto !important;
+  }
+
+  .artist-page-modal.open .artist-spectrum,
+  .artist-page-modal.open .artist-profile-info::before{
+    position:fixed !important;
+    transform:none !important;
+    animation:none !important;
+    will-change:auto !important;
+  }
+}
+
+.now-playing{
+  position:fixed !important;
+  right:calc(20px + env(safe-area-inset-right)) !important;
+  bottom:calc(20px + env(safe-area-inset-bottom)) !important;
+  z-index:2147483000 !important;
+  transform:none !important;
+  animation:none !important;
+}
+
+.track-row{
+  grid-template-columns:92px minmax(0,1fr) auto !important;
+}
+
+.hover-play{
+  width:92px !important;
+  height:44px !important;
+  justify-content:flex-start !important;
+  gap:14px !important;
+}
+
+.track-number{
+  opacity:1 !important;
+}
+
+.track-play-btn{
+  position:static !important;
+  inset:auto !important;
+  width:44px !important;
+  height:44px !important;
+  flex:0 0 44px !important;
+  display:grid !important;
+  place-items:center !important;
+  opacity:1 !important;
+  border:1px solid rgba(200,244,0,.38) !important;
+  border-radius:999px !important;
+  background:rgba(5,5,5,.72) !important;
+  color:#C8F400 !important;
+  font-size:.95rem !important;
+  line-height:1 !important;
+  transform:none !important;
+}
+
+.hover-play:hover .track-number{
+  opacity:1 !important;
+}
+
+.hover-play:hover .track-play-btn,
+.track-play-btn:hover,
+.track-play-btn.active{
+  opacity:1 !important;
+  transform:none !important;
+  background:#C8F400 !important;
+  color:#050505 !important;
+}
+
+@media(max-width:900px){
+  .track-row{
+    grid-template-columns:82px minmax(0,1fr) auto !important;
+  }
+
+  .hover-play{
+    width:82px !important;
+    gap:10px !important;
+  }
+}
+
+
+
+/* ===== ARTIST PAGE SCROLL ARCHITECTURE LOCK ===== */
+@media(min-width:901px){
+  .artist-page-modal.open{
+    overflow:hidden !important;
+    height:100vh !important;
+    height:100svh !important;
+    transform:none !important;
+    filter:none !important;
+  }
+
+  .artist-page-modal.open .artist-page-inner{
+    height:100vh !important;
+    height:100svh !important;
+    min-height:0 !important;
+    overflow:hidden !important;
+    padding-top:110px !important;
+    padding-bottom:110px !important;
+    transform:none !important;
+    filter:none !important;
+    animation:none !important;
+  }
+
+  .artist-page-modal.open .artist-profile-grid{
+    height:calc(100vh - 220px) !important;
+    height:calc(100svh - 220px) !important;
+    overflow:visible !important;
+    transform:none !important;
+    animation:none !important;
+  }
+
+  .artist-page-modal.open .artist-profile-grid > div:first-child{
+    height:calc(100vh - 220px) !important;
+    height:calc(100svh - 220px) !important;
+    min-height:0 !important;
+    overflow:visible !important;
+  }
+
+  .artist-page-modal.open .artist-profile-grid > div:first-child .artist-profile-cover{
+    position:fixed !important;
+    left:max(48px, calc((100vw - 1180px) / 2)) !important;
+    top:calc(112px + env(safe-area-inset-top)) !important;
+    width:min(430px, 32vw) !important;
+    height:min(430px, 32vw) !important;
+    max-width:430px !important;
+    max-height:430px !important;
+    object-fit:cover !important;
+    transform:none !important;
+    filter:none !important;
+    animation:none !important;
+    z-index:20 !important;
+  }
+
+  .artist-page-modal.open .artist-profile-info{
+    height:calc(100vh - 220px) !important;
+    height:calc(100svh - 220px) !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    padding-right:18px !important;
+    -webkit-overflow-scrolling:touch;
+    transform:none !important;
+    animation:none !important;
+    scrollbar-width:thin;
+  }
+
+  .artist-page-modal.open .artist-spectrum{
+    position:fixed !important;
+    left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 34px) !important;
+    right:calc(max(48px, (100vw - 1180px) / 2) - 34px) !important;
+    top:calc(112px + env(safe-area-inset-top)) !important;
+    height:min(360px, 54vh) !important;
+    transform:none !important;
+    animation:none !important;
+    z-index:0 !important;
+  }
+
+  .artist-page-modal.open .artist-profile-info::before{
+    position:fixed !important;
+    left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 40px) !important;
+    right:calc(max(48px, (100vw - 1180px) / 2) - 40px) !important;
+    top:calc(108px + env(safe-area-inset-top)) !important;
+    height:min(390px, 58vh) !important;
+    transform:none !important;
+    animation:none !important;
+  }
+}
+
+
+
+/* ===== TRUE FIXED ARTIST VISUAL LAYER ===== */
+.artist-fixed-visual-layer{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:9810;
+  pointer-events:none;
+}
+
+.artist-fixed-visual-layer.is-visible{
+  display:block;
+}
+
+.artist-fixed-cover{
+  position:fixed;
+  left:max(48px, calc((100vw - 1180px) / 2));
+  top:calc(112px + env(safe-area-inset-top));
+  width:min(430px, 32vw);
+  height:min(430px, 32vw);
+  max-width:430px;
+  max-height:430px;
+  object-fit:cover;
+  border:1px solid rgba(240,237,230,.08);
+  box-shadow:0 30px 100px rgba(0,0,0,.65), 0 0 80px rgba(200,244,0,.08);
+  background:#050505;
+  filter:none;
+}
+
+.artist-fixed-spectrum{
+  position:fixed;
+  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 34px);
+  right:calc(max(48px, (100vw - 1180px) / 2) - 34px);
+  top:calc(112px + env(safe-area-inset-top));
+  height:min(360px, 54vh);
+  opacity:.46;
+  filter:drop-shadow(0 0 18px rgba(200,244,0,.18));
+  mix-blend-mode:screen;
+}
+
+.artist-page-modal.open .artist-profile-grid > div:first-child .artist-profile-cover{
+  opacity:0 !important;
+  visibility:hidden !important;
+}
+
+.artist-page-modal.open .artist-profile-info .artist-spectrum{
+  opacity:0 !important;
+  visibility:hidden !important;
+}
+
+@media(max-width:900px){
+  .artist-fixed-cover{
+    position:fixed;
+    left:24px;
+    top:calc(92px + env(safe-area-inset-top));
+    width:min(330px, calc(100vw - 48px));
+    height:min(330px, calc(100vw - 48px));
+  }
+
+  .artist-fixed-spectrum{
+    left:-18px;
+    right:-18px;
+    top:calc(96px + env(safe-area-inset-top));
+    height:270px;
+    opacity:.34;
+  }
+}
+
+
+
+/* ===== ARTIST MODAL INTERNAL FIXED LAYOUT ===== */
+.artist-page-modal.open{
+  overflow:hidden !important;
+  height:100vh !important;
+  height:100svh !important;
+}
+
+.artist-page-modal.open .artist-page-inner{
+  overflow:hidden !important;
+  height:100vh !important;
+  height:100svh !important;
+  min-height:0 !important;
+}
+
+.artist-page-modal.open .artist-profile-grid{
+  height:calc(100vh - 190px) !important;
+  height:calc(100svh - 190px) !important;
+  overflow:visible !important;
+}
+
+.artist-page-modal.open .artist-profile-grid > div:first-child{
+  position:sticky !important;
+  top:0 !important;
+  align-self:start !important;
+  height:min(430px, 32vw) !important;
+  min-height:0 !important;
+  overflow:visible !important;
+}
+
+.artist-page-modal.open .artist-profile-grid > div:first-child .artist-profile-cover{
+  position:relative !important;
+  left:auto !important;
+  top:auto !important;
+  width:100% !important;
+  height:auto !important;
+  max-width:430px !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  transform:none !important;
+  animation:none !important;
+  filter:none !important;
+  z-index:3 !important;
+}
+
+.artist-page-modal.open .artist-profile-info{
+  height:calc(100vh - 190px) !important;
+  height:calc(100svh - 190px) !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior:contain !important;
+  padding-right:18px !important;
+}
+
+.artist-page-modal.open .artist-profile-info .artist-spectrum{
+  visibility:visible !important;
+  opacity:.46 !important;
+}
+
+.artist-page-modal.open .artist-fixed-visual-layer{
+  display:none !important;
+}
+
+@media(max-width:900px){
+  .artist-page-modal.open{
+    overflow-y:auto !important;
+    height:auto !important;
+  }
+
+  .artist-page-modal.open .artist-page-inner,
+  .artist-page-modal.open .artist-profile-grid,
+  .artist-page-modal.open .artist-profile-info{
+    height:auto !important;
+    overflow:visible !important;
+  }
+
+  .artist-page-modal.open .artist-profile-grid > div:first-child{
+    position:sticky !important;
+    top:90px !important;
+    height:auto !important;
+  }
+}
+
+
+
+/* ===== ARTIST MODAL FIXED BACKGROUND VISUALS ===== */
+.artist-page-modal{
+  isolation:isolate;
+}
+
+.artist-page-modal .artist-modal-bg-layer{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+}
+
+.artist-page-modal.open .artist-modal-bg-layer{
+  display:block;
+}
+
+.artist-page-modal .artist-modal-bg-cover{
+  position:fixed;
+  left:max(48px, calc((100vw - 1180px) / 2));
+  top:calc(112px + env(safe-area-inset-top));
+  width:min(430px, 32vw);
+  height:min(430px, 32vw);
+  max-width:430px;
+  max-height:430px;
+  object-fit:cover;
+  background:#050505;
+  border:1px solid rgba(240,237,230,.08);
+  box-shadow:0 30px 100px rgba(0,0,0,.65), 0 0 80px rgba(200,244,0,.08);
+  filter:none;
+}
+
+.artist-page-modal .artist-modal-bg-spectrum{
+  position:fixed;
+  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 34px);
+  right:calc(max(48px, (100vw - 1180px) / 2) - 34px);
+  top:calc(112px + env(safe-area-inset-top));
+  height:min(360px, 54vh);
+  opacity:.46;
+  filter:drop-shadow(0 0 18px rgba(200,244,0,.18));
+  mix-blend-mode:screen;
+}
+
+.artist-page-modal.open .artist-page-inner{
+  position:relative;
+  z-index:2;
+}
+
+.artist-page-modal.open .artist-profile-grid > div:first-child .artist-profile-cover,
+.artist-page-modal.open .artist-profile-info > .artist-spectrum{
+  opacity:0 !important;
+  visibility:hidden !important;
+}
+
+.artist-page-modal.open .artist-profile-grid > div:first-child{
+  min-height:min(430px, 32vw) !important;
+}
+
+@media(max-width:900px){
+  .artist-page-modal .artist-modal-bg-cover{
+    left:24px;
+    top:calc(92px + env(safe-area-inset-top));
+    width:min(330px, calc(100vw - 48px));
+    height:min(330px, calc(100vw - 48px));
+  }
+
+  .artist-page-modal .artist-modal-bg-spectrum{
+    left:-18px;
+    right:-18px;
+    top:calc(96px + env(safe-area-inset-top));
+    height:270px;
+    opacity:.34;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -3718,7 +4143,9 @@ select{
 
   function drawSpectrum(time){
     const modalOpen = document.querySelector('.artist-page-modal.open');
-    const canvases = modalOpen ? modalOpen.querySelectorAll('.artist-spectrum') : [];
+    const modalBgSpectrum = modalOpen ? modalOpen.querySelector('.artist-modal-bg-spectrum') : null;
+    const fixedSpectrum = document.querySelector('.artist-fixed-visual-layer.is-visible .artist-fixed-spectrum');
+    const canvases = modalBgSpectrum ? [modalBgSpectrum] : (fixedSpectrum ? [fixedSpectrum] : (modalOpen ? modalOpen.querySelectorAll('.artist-spectrum') : []));
     if(!canvases.length){
       raf = 0;
       return;
@@ -3884,6 +4311,143 @@ select{
     window.addEventListener('focus', syncUI);
 
     syncUI();
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function ensureFixedLayer(){
+    let layer = document.getElementById('artistFixedVisualLayer');
+    if(layer) return layer;
+    layer = document.createElement('div');
+    layer.id = 'artistFixedVisualLayer';
+    layer.className = 'artist-fixed-visual-layer';
+    layer.innerHTML = '<img class="artist-fixed-cover" id="artistFixedCover" alt=""><canvas class="artist-fixed-spectrum" id="artistFixedSpectrum" aria-hidden="true"></canvas>';
+    document.body.appendChild(layer);
+    return layer;
+  }
+
+  function activeModal(){
+    return document.querySelector('.artist-page-modal.open');
+  }
+
+  function syncFixedLayer(){
+    const layer = ensureFixedLayer();
+    const modal = activeModal();
+    const img = document.getElementById('artistFixedCover');
+    if(!modal){
+      layer.classList.remove('is-visible');
+      return;
+    }
+    const cover = modal.querySelector('.artist-profile-cover');
+    if(cover && img){
+      img.src = cover.currentSrc || cover.src;
+      img.alt = cover.alt || '';
+      const objectFit = getComputedStyle(cover).objectFit;
+      img.style.objectFit = objectFit || 'cover';
+    }
+    layer.classList.add('is-visible');
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    ensureFixedLayer();
+    document.querySelectorAll('.artist-page-modal').forEach(function(modal){
+      new MutationObserver(syncFixedLayer).observe(modal, {attributes:true, attributeFilter:['class']});
+    });
+    document.addEventListener('click', function(){
+      window.setTimeout(syncFixedLayer, 0);
+    }, true);
+    window.addEventListener('resize', syncFixedLayer);
+    syncFixedLayer();
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function getOpenArtistModal(){
+    return document.querySelector('.artist-page-modal.open');
+  }
+
+  function getScrollPanel(modal){
+    return modal ? modal.querySelector('.artist-profile-info') : null;
+  }
+
+  function lockArtistModalScroll(modal){
+    if(!modal) return;
+    modal.scrollTop = 0;
+    const panel = getScrollPanel(modal);
+    if(panel && !panel.dataset.artistScrollReady){
+      panel.dataset.artistScrollReady = '1';
+      panel.scrollTop = 0;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.artist-page-modal').forEach(function(modal){
+      new MutationObserver(function(){
+        if(modal.classList.contains('open')){
+          window.setTimeout(function(){ lockArtistModalScroll(modal); }, 0);
+        }
+      }).observe(modal, { attributes:true, attributeFilter:['class'] });
+
+      modal.addEventListener('wheel', function(event){
+        if(!modal.classList.contains('open')) return;
+        const panel = getScrollPanel(modal);
+        if(!panel || window.matchMedia('(max-width:900px)').matches) return;
+        if(!panel.contains(event.target)){
+          panel.scrollTop += event.deltaY;
+          event.preventDefault();
+        }
+        modal.scrollTop = 0;
+      }, { passive:false });
+
+      modal.addEventListener('scroll', function(){
+        if(modal.classList.contains('open')) modal.scrollTop = 0;
+      }, { passive:true });
+    });
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function ensureArtistModalBackground(modal){
+    let layer = modal.querySelector('.artist-modal-bg-layer');
+    if(layer) return layer;
+
+    layer = document.createElement('div');
+    layer.className = 'artist-modal-bg-layer';
+    layer.innerHTML = '<img class="artist-modal-bg-cover" alt=""><canvas class="artist-modal-bg-spectrum" aria-hidden="true"></canvas>';
+    modal.insertBefore(layer, modal.firstChild);
+    return layer;
+  }
+
+  function syncArtistModalBackground(modal){
+    const layer = ensureArtistModalBackground(modal);
+    const bgCover = layer.querySelector('.artist-modal-bg-cover');
+    const cover = modal.querySelector('.artist-profile-cover');
+    if(cover && bgCover){
+      bgCover.src = cover.currentSrc || cover.src;
+      bgCover.alt = cover.alt || '';
+      bgCover.style.objectFit = getComputedStyle(cover).objectFit || 'cover';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.artist-page-modal').forEach(function(modal){
+      ensureArtistModalBackground(modal);
+      syncArtistModalBackground(modal);
+      new MutationObserver(function(){
+        if(modal.classList.contains('open')){
+          syncArtistModalBackground(modal);
+        }
+      }).observe(modal, { attributes:true, attributeFilter:['class'] });
+    });
   });
 })();
 </script>
