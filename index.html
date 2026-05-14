@@ -3138,30 +3138,42 @@ body:has(.artist-modal.open) .cursor-ring{
   }
 }
 
-/* ===== PLAYER TRANSPARENCY + CURSOR FIX ===== */
-html,
-body,
-body *,
-.artist-modal,
-.artist-modal *,
-.player,
-.player *{
-  cursor:auto !important;
+/* ===== PLAYER TRANSPARENCY + CUSTOM CURSOR RESTORE ===== */
+@media(pointer:fine){
+  html,
+  body,
+  body *,
+  .artist-modal,
+  .artist-modal *,
+  .player,
+  .player *{
+    cursor:none !important;
+  }
+
+  .cursor,
+  .cursor-ring{
+    display:block !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:none !important;
+  }
 }
 
-button,
-[role="button"],
-a,
-.track-row,
-.player button{
-  cursor:pointer !important;
-}
+@media(pointer:coarse){
+  html,
+  body,
+  body *,
+  .artist-modal,
+  .artist-modal *,
+  .player,
+  .player *{
+    cursor:auto !important;
+  }
 
-.cursor,
-.cursor-ring{
-  display:none !important;
-  opacity:0 !important;
-  visibility:hidden !important;
+  .cursor,
+  .cursor-ring{
+    display:none !important;
+  }
 }
 
 .player{
