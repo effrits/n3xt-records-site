@@ -2830,6 +2830,58 @@ select{
   }
 }
 
+
+/* ===== VERSION ALTERNATIVE ARTIST + PLAYER CSS ===== */
+.player{position:fixed;left:0;right:0;bottom:0;z-index:80;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:12px max(16px,env(safe-area-inset-left)) calc(12px + env(safe-area-inset-bottom));background:rgba(5,5,5,.94);border-top:1px solid var(--soft);backdrop-filter:blur(14px)}
+.player button{width:42px;height:42px;border-radius:50%;border:1px solid var(--acid);background:var(--acid);color:#050505;font-weight:700;cursor:pointer}
+.player-title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-meta{color:rgba(240,237,230,.45);font-family:"Space Mono";font-size:.68rem;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.progress{height:4px;background:rgba(240,237,230,.12);margin-top:9px;overflow:hidden}
+.progress span{display:block;height:100%;width:0;background:var(--acid)}
+.time{font-family:"Space Mono";font-size:.72rem;color:rgba(240,237,230,.54);min-width:84px;text-align:right}
+.artist-modal{position:fixed;inset:0;z-index:70;background:rgba(5,5,5,.96);display:none;overflow:auto;padding:96px clamp(18px,4vw,48px) 110px}
+.artist-modal.open{display:block}
+.modal-close{position:fixed;top:22px;right:clamp(18px,4vw,48px);z-index:5;border:1px solid var(--soft);background:rgba(5,5,5,.8);color:var(--white);padding:12px 16px;cursor:pointer}
+.artist-layout{max-width:var(--max);margin:auto;display:grid;grid-template-columns:minmax(280px,430px) 1fr;gap:46px;align-items:start}
+.artist-side{position:sticky;top:102px}
+.artist-cover{width:100%;aspect-ratio:1;object-fit:cover;background:#050505;border:1px solid var(--soft);box-shadow:0 30px 80px rgba(0,0,0,.42)}
+.artist-info{position:relative;min-height:440px}
+.spectrum{position:sticky;top:102px;height:210px;margin-bottom:-150px;display:flex;align-items:end;gap:5px;opacity:.36;pointer-events:none;filter:drop-shadow(0 0 12px rgba(255,45,85,.25))}
+.spectrum span{flex:1;min-width:3px;height:var(--h1);background:linear-gradient(to top,rgba(255,45,85,.3),rgba(200,244,0,.9));animation:sbar 1.7s ease-in-out infinite;animation-delay:calc(var(--i) * -70ms)}
+@keyframes sbar{50%{height:var(--h2);opacity:.78}}
+@media (prefers-reduced-motion:reduce){.spectrum span,.orb,.ticker{animation:none!important}}
+.artist-info h2{position:relative;font-family:"Bebas Neue";font-size:clamp(4rem,10vw,9rem);line-height:.82;margin:0;color:var(--white);text-shadow:0 0 36px rgba(200,244,0,.2)}
+.artist-sub{position:relative;color:var(--acid);font-family:"Space Mono";font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;margin:18px 0 20px}
+.artist-desc{position:relative;color:var(--muted);line-height:1.7;max-width:680px}
+.meta-grid{position:relative;display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--soft);border:1px solid var(--soft);margin:30px 0}
+.meta-item{background:rgba(8,8,8,.86);padding:18px}
+.meta-item span{display:block;font-family:"Space Mono";font-size:.6rem;text-transform:uppercase;letter-spacing:.16em;color:rgba(240,237,230,.35);margin-bottom:8px}
+.tracklist{position:relative;border-top:1px solid var(--soft)}
+.track-row{width:100%;display:grid;grid-template-columns:42px 42px 1fr 54px;gap:12px;align-items:center;text-align:left;border:0;border-bottom:1px solid var(--soft);background:rgba(5,5,5,.42);color:var(--white);padding:13px 0;cursor:pointer}
+.track-row:hover .track-name{color:var(--acid)}
+.track-row .num,.track-row .dur{font-family:"Space Mono";font-size:.7rem;color:rgba(240,237,230,.42)}
+.track-row .play{width:32px;height:32px;border-radius:50%;border:1px solid rgba(240,237,230,.18);display:grid;place-items:center;color:var(--acid);font-size:.75rem}
+.track-name{font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+
+/* Alternative artist/player graft */
+.now-playing{
+  display:none !important;
+}
+
+.artist-modal{
+  z-index:9800;
+}
+
+.artist-modal.open ~ .player,
+.player{
+  z-index:2147483000;
+}
+
+.artist-modal .track-row{
+  grid-template-columns:42px 42px 1fr 54px !important;
+}
+
 </style>
 </head>
 <body>
@@ -4451,6 +4503,218 @@ select{
   });
 })();
 </script>
+
+
+<!-- VERSION ALTERNATIVE ARTIST + PLAYER START -->
+<div class="artist-modal" id="artistModal" aria-hidden="true">
+  <button class="modal-close" type="button" id="closeArtist">✕ Fermer</button>
+  <div class="artist-layout">
+    <aside class="artist-side">
+      <img class="artist-cover" id="artistCover" src="" alt="" loading="lazy">
+    </aside>
+    <section class="artist-info">
+      <div class="spectrum" aria-hidden="true"><span style="--i:0;--h1:24px;--h2:46px"></span><span style="--i:1;--h1:39px;--h2:65px"></span><span style="--i:2;--h1:54px;--h2:84px"></span><span style="--i:3;--h1:69px;--h2:103px"></span><span style="--i:4;--h1:84px;--h2:122px"></span><span style="--i:5;--h1:99px;--h2:141px"></span><span style="--i:6;--h1:114px;--h2:160px"></span><span style="--i:7;--h1:129px;--h2:46px"></span><span style="--i:8;--h1:144px;--h2:65px"></span><span style="--i:9;--h1:24px;--h2:84px"></span><span style="--i:10;--h1:39px;--h2:103px"></span><span style="--i:11;--h1:54px;--h2:122px"></span><span style="--i:12;--h1:69px;--h2:141px"></span><span style="--i:13;--h1:84px;--h2:160px"></span><span style="--i:14;--h1:99px;--h2:46px"></span><span style="--i:15;--h1:114px;--h2:65px"></span><span style="--i:16;--h1:129px;--h2:84px"></span><span style="--i:17;--h1:144px;--h2:103px"></span><span style="--i:18;--h1:24px;--h2:122px"></span><span style="--i:19;--h1:39px;--h2:141px"></span><span style="--i:20;--h1:54px;--h2:160px"></span><span style="--i:21;--h1:69px;--h2:46px"></span><span style="--i:22;--h1:84px;--h2:65px"></span><span style="--i:23;--h1:99px;--h2:84px"></span><span style="--i:24;--h1:114px;--h2:103px"></span><span style="--i:25;--h1:129px;--h2:122px"></span><span style="--i:26;--h1:144px;--h2:141px"></span><span style="--i:27;--h1:24px;--h2:160px"></span></div>
+      <h2 id="artistName"></h2>
+      <div class="artist-sub" id="artistSubtitle"></div>
+      <p class="artist-desc" id="artistDescription"></p>
+      <div class="meta-grid">
+        <div class="meta-item"><span>Projet</span><strong id="artistAlbum"></strong></div>
+        <div class="meta-item"><span>Année</span><strong id="artistYear"></strong></div>
+        <div class="meta-item"><span>Style</span><strong id="artistStyle"></strong></div>
+        <div class="meta-item"><span>Format</span><strong>Preview 1:11</strong></div>
+      </div>
+      <div class="tracklist" id="artistTracks"></div>
+    </section>
+  </div>
+</div>
+
+
+<div class="player" id="player">
+  <button type="button" id="playerToggle" aria-label="Lecture">▶</button>
+  <div>
+    <div class="player-title" id="playerTitle">Aucune preview</div>
+    <div class="player-meta" id="playerMeta">Choisis un morceau</div>
+    <div class="progress"><span id="playerProgress"></span></div>
+  </div>
+  <div class="time" id="playerTime">0:00 / 1:11</div>
+  <audio id="audio" preload="none" playsinline></audio>
+</div>
+
+
+<script>
+const SITE_DATA = {"artists":[{"id":"n3xt","name":"N3XT","type":"Projet label","status":"Album preview","year":"2026","style":"AI music / Rap / Pop sombre","cover":"assets/images/280df0d804d297a1.png","album":"N3XT PART 1","subtitle":"Human x AI - Music AI - Paris","description":"N3XT est le premier projet vitrine du label : une esthétique sombre, futuriste et émotionnelle, pensée pour présenter une nouvelle manière de produire et défendre la musique créée avec l'intelligence artificielle.","tracks":[["Démon","assets/audio/6bf1f9af8076730e.mp3"],["Labyrinthe","assets/audio/7241018ef878ca2c.mp3"],["Désespoir et silence (remix)","assets/audio/77d0b9e66c5604fe.mp3"],["Les ad-lib","assets/audio/666a0aadab9d10e6.mp3"],["Mi-Vida lost","assets/audio/d22589d1a8991eb7.mp3"],["Larmes","assets/audio/948f10e750a7c053.mp3"],["Femme fatale","assets/audio/2dacc7dc3913b42d.m4a"],["Labyrinthe II","assets/audio/dc91397cddd76f46.mp3"],["Norcè (janet)","assets/audio/3578951ed97f1f03.mp3"],["Eclipse","assets/audio/7b571d2cd12b5941.mp3"],["Outro","assets/audio/4c6738b20f6db416.mp3"]]},{"id":"betty","name":"Betty","type":"Artiste du label","status":"Single preview","year":"2026","style":"Chanson française / Alternative indie soul / Neo-soul","cover":"assets/images/02d7bae330380cef.jpg","album":"Quelque chose veille","subtitle":"Human x AI - Chanson française / Alternative indie soul","description":"Betty mélange esthétique mode, énergie punk et émotion synthétique. Un univers froid, agressif et éditorial, construit entre direction artistique humaine et intelligence artificielle.","tracks":[["Quelque chose veille","assets/audio/1b9f7c132db495c2.mp3"]]}]};
+const PREVIEW_LIMIT = 71;
+
+const audio = document.getElementById('audio');
+const playerToggle = document.getElementById('playerToggle');
+const playerTitle = document.getElementById('playerTitle');
+const playerMeta = document.getElementById('playerMeta');
+const playerTime = document.getElementById('playerTime');
+const playerProgress = document.getElementById('playerProgress');
+const modal = document.getElementById('artistModal');
+const artistCover = document.getElementById('artistCover');
+const artistName = document.getElementById('artistName');
+const artistSubtitle = document.getElementById('artistSubtitle');
+const artistDescription = document.getElementById('artistDescription');
+const artistAlbum = document.getElementById('artistAlbum');
+const artistYear = document.getElementById('artistYear');
+const artistStyle = document.getElementById('artistStyle');
+const artistTracks = document.getElementById('artistTracks');
+let currentSrc = '';
+
+function formatTime(seconds){
+  const safe = Math.max(0, Math.min(PREVIEW_LIMIT, seconds || 0));
+  const m = Math.floor(safe / 60);
+  const s = String(Math.floor(safe % 60)).padStart(2, '0');
+  return m + ':' + s;
+}
+
+function findArtist(id){
+  return SITE_DATA.artists.find((artist) => artist.id === id);
+}
+
+function syncPlayer(){
+  const current = Math.min(audio.currentTime || 0, PREVIEW_LIMIT);
+  playerToggle.textContent = audio.paused ? '▶' : 'Ⅱ';
+  playerTime.textContent = formatTime(current) + ' / 1:11';
+  playerProgress.style.width = ((current / PREVIEW_LIMIT) * 100) + '%';
+  document.querySelectorAll('[data-play].active').forEach((button) => {
+    if (button.dataset.src !== currentSrc || audio.paused) button.classList.remove('active');
+  });
+}
+
+function playTrack(track){
+  if (!track.src) return;
+  if (currentSrc !== track.src) {
+    currentSrc = track.src;
+    audio.src = track.src;
+    audio.currentTime = 0;
+    playerTitle.textContent = track.title;
+    playerMeta.textContent = track.artist + ' - preview 1:11';
+  }
+  document.querySelectorAll('[data-play].active').forEach((button) => button.classList.remove('active'));
+  document.querySelectorAll('[data-play]').forEach((button) => {
+    if (button.dataset.src === track.src) button.classList.add('active');
+  });
+  audio.play().catch(syncPlayer);
+  syncPlayer();
+}
+
+function openArtist(id){
+  const artist = findArtist(id);
+  if (!artist) return;
+  artistCover.src = artist.cover;
+  artistCover.alt = artist.name;
+  artistName.textContent = artist.name;
+  artistSubtitle.textContent = artist.subtitle;
+  artistDescription.textContent = artist.description;
+  artistAlbum.textContent = artist.album;
+  artistYear.textContent = artist.year;
+  artistStyle.textContent = artist.style;
+  artistTracks.innerHTML = artist.tracks.map(([title, src], index) => `
+    <button class="track-row" type="button" data-play data-artist="${artist.name}" data-title="${title}" data-src="${src}">
+      <span class="num">${String(index + 1).padStart(2, '0')}</span>
+      <span class="play">▶</span>
+      <span class="track-name">${title}</span>
+      <span class="dur">1:11</span>
+    </button>`).join('');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+}
+
+window.openAltArtist = openArtist;
+window.closeAltArtist = closeArtist;
+
+function closeArtist(){
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+}
+
+document.addEventListener('click', (event) => {
+  const openButton = event.target.closest('[data-open-artist]');
+  if (openButton) {
+    openArtist(openButton.dataset.openArtist);
+    return;
+  }
+
+  const playButton = event.target.closest('[data-play]');
+  if (playButton) {
+    playTrack({
+      artist: playButton.dataset.artist,
+      title: playButton.dataset.title,
+      src: playButton.dataset.src,
+    });
+  }
+});
+
+document.getElementById('closeArtist').addEventListener('click', closeArtist);
+modal.addEventListener('click', (event) => {
+  if (event.target === modal) closeArtist();
+});
+
+playerToggle.addEventListener('click', () => {
+  if (!currentSrc) return;
+  if (audio.paused) audio.play().catch(syncPlayer);
+  else audio.pause();
+  syncPlayer();
+});
+
+audio.addEventListener('timeupdate', () => {
+  if (audio.currentTime >= PREVIEW_LIMIT) {
+    audio.pause();
+    audio.currentTime = PREVIEW_LIMIT;
+  }
+  syncPlayer();
+});
+['play','pause','ended','loadedmetadata','stalled','suspend','abort','error'].forEach((name) => {
+  audio.addEventListener(name, syncPlayer);
+});
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) window.setTimeout(syncPlayer, 120);
+});
+window.addEventListener('pageshow', syncPlayer);
+
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+if (cursor && ring && matchMedia('(pointer:fine)').matches) {
+  window.addEventListener('mousemove', (event) => {
+    cursor.style.transform = 'translate(' + (event.clientX - 6) + 'px,' + (event.clientY - 6) + 'px)';
+    ring.style.transform = 'translate(' + (event.clientX - 19) + 'px,' + (event.clientY - 19) + 'px)';
+  }, { passive: true });
+}
+
+document.querySelector('.submit-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+});
+</script>
+
+<script>
+(function(){
+  function artistFromTarget(target){
+    if(!target) return '';
+    if(target.closest('[data-artist-target="n3xt"], #artist-n3xt-card')) return 'n3xt';
+    if(target.closest('#artist-betty-card')) return 'betty';
+    const direct = target.closest('[data-open-artist]');
+    return direct ? direct.getAttribute('data-open-artist') : '';
+  }
+
+  document.addEventListener('click', function(event){
+    const artistId = artistFromTarget(event.target);
+    if(!artistId || !window.openAltArtist) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    document.querySelectorAll('.artist-page-modal.open').forEach(function(modal){
+      modal.classList.remove('open');
+    });
+    window.openAltArtist(artistId);
+  }, true);
+})();
+</script>
+
+<!-- VERSION ALTERNATIVE ARTIST + PLAYER END -->
 
 </body>
 
