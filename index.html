@@ -4987,15 +4987,6 @@ document.addEventListener('visibilitychange', () => {
 });
 window.addEventListener('pageshow', syncPlayer);
 
-const cursor = document.getElementById('cursor');
-const ring = document.getElementById('cursorRing');
-if (cursor && ring && matchMedia('(pointer:fine)').matches) {
-  window.addEventListener('mousemove', (event) => {
-    cursor.style.transform = 'translate(' + (event.clientX - 6) + 'px,' + (event.clientY - 6) + 'px)';
-    ring.style.transform = 'translate(' + (event.clientX - 19) + 'px,' + (event.clientY - 19) + 'px)';
-  }, { passive: true });
-}
-
 document.querySelector('.submit-form').addEventListener('submit', (event) => {
   event.preventDefault();
 });
