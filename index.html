@@ -3401,6 +3401,41 @@ body.spectrum-playing .artist-modal.open .spectrum span{
   animation-delay:calc(var(--i) * -70ms) !important;
 }
 
+/* ===== RESTORE VERSION ALTERNATIVE SPECTRUM ===== */
+.artist-modal.open .spectrum{
+  position:sticky !important;
+  top:102px !important;
+  height:210px !important;
+  margin-bottom:-150px !important;
+  display:flex !important;
+  align-items:end !important;
+  gap:5px !important;
+  opacity:.36 !important;
+  pointer-events:none !important;
+  filter:drop-shadow(0 0 12px rgba(255,45,85,.25)) !important;
+}
+
+.artist-modal.open .spectrum span{
+  flex:1 !important;
+  min-width:3px !important;
+  height:var(--h1) !important;
+  background:linear-gradient(to top,rgba(255,45,85,.3),rgba(200,244,0,.9)) !important;
+  animation:sbar 1.7s ease-in-out infinite !important;
+  animation-delay:calc(var(--i) * -70ms) !important;
+}
+
+@media(max-width:900px){
+  .artist-modal.open .spectrum{
+    position:fixed !important;
+    left:18px !important;
+    right:18px !important;
+    top:96px !important;
+    height:150px !important;
+    margin:0 !important;
+    opacity:.22 !important;
+  }
+}
+
 .player-controls{
   display:flex;
   align-items:center;
