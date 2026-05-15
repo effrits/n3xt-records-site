@@ -3391,8 +3391,14 @@ body:has(.artist-modal.open) .cursor-ring{
 /* ===== MUSIC-REACTIVE SPECTRUM ONLY ===== */
 .spectrum span{
   animation:none !important;
-  height:var(--level, var(--h1)) !important;
-  transition:height .08s linear, opacity .08s linear !important;
+  height:var(--h1) !important;
+  background:linear-gradient(to top,rgba(255,45,85,.3),rgba(200,244,0,.9)) !important;
+  transition:opacity .12s linear !important;
+}
+
+body.spectrum-playing .artist-modal.open .spectrum span{
+  animation:sbar 1.7s ease-in-out infinite !important;
+  animation-delay:calc(var(--i) * -70ms) !important;
 }
 
 .player-controls{
@@ -4712,24 +4718,7 @@ body:has(.artist-modal.open) .cursor-ring{
   }
 
   function setupAudioGraph(){
-    const audio = getAudio();
-    if(!audio || sourceCreated) return;
-    try{
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if(!AudioContextClass) return;
-      audioContext = new AudioContextClass();
-      analyser = audioContext.createAnalyser();
-      analyser.fftSize = 128;
-      analyser.smoothingTimeConstant = .84;
-      data = new Uint8Array(analyser.frequencyBinCount);
-      const source = audioContext.createMediaElementSource(audio);
-      source.connect(analyser);
-      analyser.connect(audioContext.destination);
-      sourceCreated = true;
-    }catch(error){
-      analyser = null;
-      data = null;
-    }
+    return;
   }
 
   function drawSpectrum(time){
@@ -4801,11 +4790,6 @@ body:has(.artist-modal.open) .cursor-ring{
     const audio = getAudio();
     if(!audio || !src) return;
     const source = getSource(audio);
-
-    setupAudioGraph();
-    if(audioContext && audioContext.state === 'suspended'){
-      audioContext.resume();
-    }
 
     if(currentSrc !== src){
       currentSrc = src;
@@ -5166,64 +5150,21 @@ function syncPlayer(){
 }
 
 function setupAltSpectrum(){
-  if (altSourceCreated) return;
-  try {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) return;
-    altAudioContext = new AudioContextClass();
-    altAnalyser = altAudioContext.createAnalyser();
-    altAnalyser.fftSize = 128;
-    altAnalyser.smoothingTimeConstant = .78;
-    altAnalyserData = new Uint8Array(altAnalyser.frequencyBinCount);
-    const source = altAudioContext.createMediaElementSource(audio);
-    source.connect(altAnalyser);
-    altAnalyser.connect(altAudioContext.destination);
-    altSourceCreated = true;
-  } catch (error) {
-    altAnalyser = null;
-    altAnalyserData = null;
-  }
+  return;
 }
 
 function resetAltSpectrum(){
-  document.querySelectorAll('.spectrum span').forEach((bar) => {
-    bar.style.setProperty('--level', bar.style.getPropertyValue('--h1') || '24px');
-  });
+  document.body.classList.remove('spectrum-playing');
 }
 
 function renderAltSpectrum(){
-  const bars = document.querySelectorAll('.spectrum span');
-  if (!bars.length || audio.paused || !currentSrc) {
-    altSpectrumFrame = 0;
-    resetAltSpectrum();
-    return;
-  }
-
-  if (altAnalyser && altAnalyserData) {
-    altAnalyser.getByteFrequencyData(altAnalyserData);
-  }
-
-  bars.forEach((bar, index) => {
-    const base = parseFloat(bar.style.getPropertyValue('--h1')) || 24;
-    const peak = parseFloat(bar.style.getPropertyValue('--h2')) || 96;
-    let level = .18;
-    if (altAnalyser && altAnalyserData) {
-      const dataIndex = Math.min(altAnalyserData.length - 1, Math.floor(index * altAnalyserData.length / bars.length));
-      level = altAnalyserData[dataIndex] / 255;
-    }
-    const height = base + (peak - base) * Math.max(.08, level);
-    bar.style.setProperty('--level', height.toFixed(1) + 'px');
-  });
-
-  altSpectrumFrame = requestAnimationFrame(renderAltSpectrum);
+  altSpectrumFrame = 0;
 }
 
 function startAltSpectrum(){
-  setupAltSpectrum();
-  if (altAudioContext && altAudioContext.state === 'suspended') {
-    altAudioContext.resume();
+  if (!audio.paused && currentSrc) {
+    document.body.classList.add('spectrum-playing');
   }
-  if (!altSpectrumFrame) altSpectrumFrame = requestAnimationFrame(renderAltSpectrum);
 }
 
 function playNextTrack(){
@@ -5426,6 +5367,9 @@ audio.addEventListener('timeupdate', () => {
 ['play','pause','ended','loadedmetadata','stalled','suspend','abort','error'].forEach((name) => {
   audio.addEventListener(name, syncPlayer);
 });
+audio.addEventListener('play', startAltSpectrum);
+audio.addEventListener('pause', resetAltSpectrum);
+audio.addEventListener('ended', resetAltSpectrum);
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) window.setTimeout(syncPlayer, 120);
 });
