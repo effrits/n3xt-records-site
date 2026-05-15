@@ -2266,83 +2266,6 @@ select{
   }
 }
 
-/* ===== ARTIST PAGE FIXED COVER + SPECTRUM DISPLAY ===== */
-.artist-page-modal .artist-profile-info{
-  position:relative;
-  isolation:isolate;
-}
-
-.artist-page-modal .artist-spectrum{
-  position:fixed;
-  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 34px);
-  right:calc(max(48px, (100vw - 1180px) / 2) - 34px);
-  top:calc(112px + env(safe-area-inset-top));
-  height:min(360px, 54vh);
-  z-index:0;
-  opacity:.42;
-  pointer-events:none;
-  filter:drop-shadow(0 0 18px rgba(200,244,0,.12));
-  mix-blend-mode:screen;
-}
-
-.artist-page-modal .artist-profile-info::before{
-  content:'';
-  position:fixed;
-  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 40px);
-  right:calc(max(48px, (100vw - 1180px) / 2) - 40px);
-  top:calc(108px + env(safe-area-inset-top));
-  height:min(390px, 58vh);
-  z-index:0;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at 68% 40%, rgba(200,244,0,.11), transparent 48%),
-    linear-gradient(180deg, rgba(255,45,85,.09), rgba(5,5,5,0) 78%);
-  opacity:.78;
-}
-
-.artist-page-modal .artist-profile-info > :not(.artist-spectrum){
-  position:relative;
-  z-index:1;
-}
-
-@media(min-width:901px){
-  .artist-page-modal .artist-profile-grid > div:first-child{
-    min-height:min(430px, 32vw);
-  }
-
-  .artist-page-modal.open .artist-profile-grid > div:first-child .artist-profile-cover{
-    position:fixed;
-    left:max(48px, calc((100vw - 1180px) / 2));
-    top:calc(112px + env(safe-area-inset-top));
-    width:min(430px, 32vw);
-    max-width:430px;
-    z-index:1;
-    animation:none !important;
-    transform:none !important;
-  }
-}
-
-@media(max-width:900px){
-  .artist-page-modal .artist-spectrum{
-    position:fixed;
-    left:-18px;
-    right:-18px;
-    top:calc(96px + env(safe-area-inset-top));
-    height:270px;
-    opacity:.36;
-  }
-
-  .artist-page-modal .artist-profile-info::before{
-    position:fixed;
-    left:-20px;
-    right:-20px;
-    top:calc(92px + env(safe-area-inset-top));
-    height:300px;
-  }
-}
-
-
-
 /* ===== HYBRID PERFORMANCE PLAYER + FIXED ARTIST VISUALS ===== */
 #nowPlayingAudio{
   position:absolute;
@@ -2401,12 +2324,6 @@ select{
   }
 }
 
-.artist-spectrum{
-  opacity:.46;
-}
-
-
-
 /* ===== FIXED ARTIST PAGE FINAL OVERRIDE ===== */
 .artist-page-modal.open,
 .artist-page-modal.open .artist-page-inner,
@@ -2436,7 +2353,6 @@ select{
     will-change:auto !important;
   }
 
-  .artist-page-modal.open .artist-spectrum,
   .artist-page-modal.open .artist-profile-info::before{
     position:fixed !important;
     transform:none !important;
@@ -2577,17 +2493,6 @@ select{
     scrollbar-width:thin;
   }
 
-  .artist-page-modal.open .artist-spectrum{
-    position:fixed !important;
-    left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 34px) !important;
-    right:calc(max(48px, (100vw - 1180px) / 2) - 34px) !important;
-    top:calc(112px + env(safe-area-inset-top)) !important;
-    height:min(360px, 54vh) !important;
-    transform:none !important;
-    animation:none !important;
-    z-index:0 !important;
-  }
-
   .artist-page-modal.open .artist-profile-info::before{
     position:fixed !important;
     left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 40px) !important;
@@ -2629,23 +2534,7 @@ select{
   filter:none;
 }
 
-.artist-fixed-spectrum{
-  position:fixed;
-  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 34px);
-  right:calc(max(48px, (100vw - 1180px) / 2) - 34px);
-  top:calc(112px + env(safe-area-inset-top));
-  height:min(360px, 54vh);
-  opacity:.46;
-  filter:drop-shadow(0 0 18px rgba(200,244,0,.18));
-  mix-blend-mode:screen;
-}
-
 .artist-page-modal.open .artist-profile-grid > div:first-child .artist-profile-cover{
-  opacity:0 !important;
-  visibility:hidden !important;
-}
-
-.artist-page-modal.open .artist-profile-info .artist-spectrum{
   opacity:0 !important;
   visibility:hidden !important;
 }
@@ -2659,13 +2548,6 @@ select{
     height:min(330px, calc(100vw - 48px));
   }
 
-  .artist-fixed-spectrum{
-    left:-18px;
-    right:-18px;
-    top:calc(96px + env(safe-area-inset-top));
-    height:270px;
-    opacity:.34;
-  }
 }
 
 
@@ -2722,11 +2604,6 @@ select{
   -webkit-overflow-scrolling:touch !important;
   overscroll-behavior:contain !important;
   padding-right:18px !important;
-}
-
-.artist-page-modal.open .artist-profile-info .artist-spectrum{
-  visibility:visible !important;
-  opacity:.46 !important;
 }
 
 .artist-page-modal.open .artist-fixed-visual-layer{
@@ -2787,24 +2664,12 @@ select{
   filter:none;
 }
 
-.artist-page-modal .artist-modal-bg-spectrum{
-  position:fixed;
-  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 34px);
-  right:calc(max(48px, (100vw - 1180px) / 2) - 34px);
-  top:calc(112px + env(safe-area-inset-top));
-  height:min(360px, 54vh);
-  opacity:.46;
-  filter:drop-shadow(0 0 18px rgba(200,244,0,.18));
-  mix-blend-mode:screen;
-}
-
 .artist-page-modal.open .artist-page-inner{
   position:relative;
   z-index:2;
 }
 
-.artist-page-modal.open .artist-profile-grid > div:first-child .artist-profile-cover,
-.artist-page-modal.open .artist-profile-info > .artist-spectrum{
+.artist-page-modal.open .artist-profile-grid > div:first-child .artist-profile-cover{
   opacity:0 !important;
   visibility:hidden !important;
 }
@@ -2821,13 +2686,6 @@ select{
     height:min(330px, calc(100vw - 48px));
   }
 
-  .artist-page-modal .artist-modal-bg-spectrum{
-    left:-18px;
-    right:-18px;
-    top:calc(96px + env(safe-area-inset-top));
-    height:270px;
-    opacity:.34;
-  }
 }
 
 
@@ -2846,10 +2704,7 @@ select{
 .artist-side{position:sticky;top:102px}
 .artist-cover{width:100%;aspect-ratio:1;object-fit:cover;background:#050505;border:1px solid var(--soft);box-shadow:0 30px 80px rgba(0,0,0,.42)}
 .artist-info{position:relative;min-height:440px}
-.spectrum{position:sticky;top:102px;height:210px;margin-bottom:-150px;display:flex;align-items:end;gap:5px;opacity:.36;pointer-events:none;filter:drop-shadow(0 0 12px rgba(255,45,85,.25))}
-.spectrum span{flex:1;min-width:3px;height:var(--h1);background:linear-gradient(to top,rgba(255,45,85,.3),rgba(200,244,0,.9));animation:sbar 1.7s ease-in-out infinite;animation-delay:calc(var(--i) * -70ms)}
-@keyframes sbar{50%{height:var(--h2);opacity:.78}}
-@media (prefers-reduced-motion:reduce){.spectrum span,.orb,.ticker{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.orb,.ticker{animation:none!important}}
 .artist-info h2{position:relative;font-family:"Bebas Neue";font-size:clamp(4rem,10vw,9rem);line-height:.82;margin:0;color:var(--white);text-shadow:0 0 36px rgba(200,244,0,.2)}
 .artist-sub{position:relative;color:var(--acid);font-family:"Space Mono";font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;margin:18px 0 20px}
 .artist-desc{position:relative;color:var(--muted);line-height:1.7;max-width:680px}
@@ -3376,79 +3231,6 @@ body:has(.artist-modal.open) .cursor-ring{
     display:none !important;
     opacity:0 !important;
     visibility:hidden !important;
-  }
-}
-
-/* ===== RESTORE VERSION ALTERNATIVE SPECTRUM ===== */
-.artist-modal .artist-info{
-  position:relative !important;
-  isolation:isolate !important;
-}
-
-.artist-modal .artist-info::before{
-  content:'' !important;
-  position:fixed !important;
-  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 40px) !important;
-  right:calc(max(48px, (100vw - 1180px) / 2) - 40px) !important;
-  top:calc(108px + env(safe-area-inset-top)) !important;
-  height:min(390px, 58vh) !important;
-  z-index:0 !important;
-  pointer-events:none !important;
-  background:
-    radial-gradient(circle at 68% 40%, rgba(200,244,0,.11), transparent 48%),
-    linear-gradient(180deg, rgba(255,45,85,.09), rgba(5,5,5,0) 78%) !important;
-  opacity:.78 !important;
-}
-
-.artist-modal .artist-info > :not(.spectrum){
-  position:relative !important;
-  z-index:1 !important;
-}
-
-.artist-modal .spectrum{
-  position:fixed !important;
-  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 34px) !important;
-  right:calc(max(48px, (100vw - 1180px) / 2) - 34px) !important;
-  top:calc(112px + env(safe-area-inset-top)) !important;
-  height:min(360px, 54vh) !important;
-  margin:0 !important;
-  display:flex !important;
-  align-items:end !important;
-  gap:5px !important;
-  opacity:.42 !important;
-  pointer-events:none !important;
-  z-index:0 !important;
-  filter:drop-shadow(0 0 18px rgba(200,244,0,.12)) !important;
-  mix-blend-mode:screen !important;
-}
-
-.artist-modal .spectrum span{
-  flex:1 !important;
-  min-width:3px !important;
-  height:var(--h1) !important;
-  background:linear-gradient(to top,rgba(255,45,85,.3),rgba(200,244,0,.9)) !important;
-  animation:sbar 1.7s ease-in-out infinite !important;
-  animation-delay:calc(var(--i) * -70ms) !important;
-}
-
-@media(max-width:900px){
-  .artist-modal .artist-info::before{
-    position:fixed !important;
-    left:-20px !important;
-    right:-20px !important;
-    top:calc(92px + env(safe-area-inset-top)) !important;
-    height:300px !important;
-    opacity:.62 !important;
-  }
-
-  .artist-modal .spectrum{
-    position:fixed !important;
-    left:-18px !important;
-    right:-18px !important;
-    top:96px !important;
-    height:270px !important;
-    margin:0 !important;
-    opacity:.36 !important;
   }
 }
 
@@ -4253,7 +4035,6 @@ body:has(.artist-modal.open) .cursor-ring{
       </div>
 
       <div class="artist-profile-info">
-        <canvas class="artist-spectrum" data-artist-spectrum="true" aria-hidden="true"></canvas>
         <div class="artist-profile-tag">Premier artiste du label</div>
         <h1 class="artist-profile-name">N3XT</h1>
         <div class="artist-profile-sub">Human × AI — Dark Alternative / Trap / R&B</div>
@@ -4705,13 +4486,7 @@ body:has(.artist-modal.open) .cursor-ring{
 <script>
 (function(){
   const PREVIEW_LIMIT = 71;
-  const BAR_COUNT = 44;
   let currentSrc = '';
-  let raf = 0;
-  let audioContext = null;
-  let analyser = null;
-  let data = null;
-  let sourceCreated = false;
 
   function formatTime(seconds){
     seconds = Math.max(0, Math.min(PREVIEW_LIMIT, seconds || 0));
@@ -4768,75 +4543,6 @@ body:has(.artist-modal.open) .cursor-ring{
     setActive(currentSrc, !audio.paused && !!currentSrc);
   }
 
-  function setupAudioGraph(){
-    return;
-  }
-
-  function drawSpectrum(time){
-    const modalOpen = document.querySelector('.artist-page-modal.open');
-    const modalBgSpectrum = modalOpen ? modalOpen.querySelector('.artist-modal-bg-spectrum') : null;
-    const fixedSpectrum = document.querySelector('.artist-fixed-visual-layer.is-visible .artist-fixed-spectrum');
-    const canvases = modalBgSpectrum ? [modalBgSpectrum] : (fixedSpectrum ? [fixedSpectrum] : (modalOpen ? modalOpen.querySelectorAll('.artist-spectrum') : []));
-    if(!canvases.length){
-      raf = 0;
-      return;
-    }
-
-    const audio = getAudio();
-    const values = new Array(BAR_COUNT);
-    if(analyser && data && audio && !audio.paused){
-      analyser.getByteFrequencyData(data);
-      for(let i = 0; i < BAR_COUNT; i++){
-        const idx = Math.min(data.length - 1, Math.floor(i * data.length / BAR_COUNT));
-        values[i] = data[idx] / 255;
-      }
-    }else{
-      for(let i = 0; i < BAR_COUNT; i++){
-        values[i] = .08;
-      }
-    }
-
-    canvases.forEach(function(canvas){
-      const rect = canvas.getBoundingClientRect();
-      if(rect.width <= 0 || rect.height <= 0) return;
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const width = Math.floor(rect.width * ratio);
-      const height = Math.floor(rect.height * ratio);
-      if(canvas.width !== width || canvas.height !== height){
-        canvas.width = width;
-        canvas.height = height;
-      }
-      const ctx = canvas.getContext('2d');
-      ctx.setTransform(ratio,0,0,ratio,0,0);
-      ctx.clearRect(0,0,rect.width,rect.height);
-      const gap = 4;
-      const barW = Math.max(3, (rect.width - gap * (BAR_COUNT - 1)) / BAR_COUNT);
-      const base = rect.height * .76;
-      const gradient = ctx.createLinearGradient(0, 0, 0, rect.height);
-      gradient.addColorStop(0, 'rgba(0,240,255,.78)');
-      gradient.addColorStop(.45, 'rgba(200,244,0,.82)');
-      gradient.addColorStop(1, 'rgba(255,45,85,.36)');
-      ctx.fillStyle = gradient;
-      ctx.shadowColor = 'rgba(200,244,0,.26)';
-      ctx.shadowBlur = 14;
-      for(let i = 0; i < BAR_COUNT; i++){
-        const h = 20 + values[i] * rect.height * .66;
-        const x = i * (barW + gap);
-        ctx.fillRect(x, base - h * .5, barW, h);
-      }
-    });
-
-    if(audio && !audio.paused){
-      raf = requestAnimationFrame(drawSpectrum);
-    }else{
-      raf = 0;
-    }
-  }
-
-  function startSpectrum(){
-    if(!raf) raf = requestAnimationFrame(drawSpectrum);
-  }
-
   function playPreview(src, title){
     const audio = getAudio();
     if(!audio || !src) return;
@@ -4854,8 +4560,7 @@ body:has(.artist-modal.open) .cursor-ring{
     const titleEl = document.getElementById('nowPlayingTitle');
     if(titleEl) titleEl.textContent = title || 'Preview';
 
-    audio.play().catch(syncUI);
-    startSpectrum();
+    audio.play().catch(syncUI);
     syncUI();
   }
 
@@ -4923,8 +4628,7 @@ body:has(.artist-modal.open) .cursor-ring{
         event.stopPropagation();
         if(!currentSrc) return;
         if(audio.paused){
-          audio.play().catch(syncUI);
-          startSpectrum();
+          audio.play().catch(syncUI);
         }else{
           audio.pause();
         }
@@ -4945,8 +4649,7 @@ body:has(.artist-modal.open) .cursor-ring{
     });
 
     document.querySelectorAll('.artist-page-modal').forEach(function(modal){
-      new MutationObserver(function(){
-        if(modal.classList.contains('open')) startSpectrum();
+      new MutationObserver(function(){
       }).observe(modal, {attributes:true, attributeFilter:['class']});
     });
 
@@ -4972,7 +4675,7 @@ body:has(.artist-modal.open) .cursor-ring{
     layer = document.createElement('div');
     layer.id = 'artistFixedVisualLayer';
     layer.className = 'artist-fixed-visual-layer';
-    layer.innerHTML = '<img class="artist-fixed-cover" id="artistFixedCover" alt=""><canvas class="artist-fixed-spectrum" id="artistFixedSpectrum" aria-hidden="true"></canvas>';
+    layer.innerHTML = '<img class="artist-fixed-cover" id="artistFixedCover" alt="">';
     document.body.appendChild(layer);
     return layer;
   }
@@ -5070,7 +4773,7 @@ body:has(.artist-modal.open) .cursor-ring{
 
     layer = document.createElement('div');
     layer.className = 'artist-modal-bg-layer';
-    layer.innerHTML = '<img class="artist-modal-bg-cover" alt=""><canvas class="artist-modal-bg-spectrum" aria-hidden="true"></canvas>';
+    layer.innerHTML = '<img class="artist-modal-bg-cover" alt="">';
     modal.insertBefore(layer, modal.firstChild);
     return layer;
   }
@@ -5109,7 +4812,6 @@ body:has(.artist-modal.open) .cursor-ring{
       <img class="artist-cover" id="artistCover" src="" alt="" loading="lazy">
     </aside>
     <section class="artist-info">
-      <div class="spectrum" aria-hidden="true"><span style="--i:0;--h1:24px;--h2:46px"></span><span style="--i:1;--h1:39px;--h2:65px"></span><span style="--i:2;--h1:54px;--h2:84px"></span><span style="--i:3;--h1:69px;--h2:103px"></span><span style="--i:4;--h1:84px;--h2:122px"></span><span style="--i:5;--h1:99px;--h2:141px"></span><span style="--i:6;--h1:114px;--h2:160px"></span><span style="--i:7;--h1:129px;--h2:46px"></span><span style="--i:8;--h1:144px;--h2:65px"></span><span style="--i:9;--h1:24px;--h2:84px"></span><span style="--i:10;--h1:39px;--h2:103px"></span><span style="--i:11;--h1:54px;--h2:122px"></span><span style="--i:12;--h1:69px;--h2:141px"></span><span style="--i:13;--h1:84px;--h2:160px"></span><span style="--i:14;--h1:99px;--h2:46px"></span><span style="--i:15;--h1:114px;--h2:65px"></span><span style="--i:16;--h1:129px;--h2:84px"></span><span style="--i:17;--h1:144px;--h2:103px"></span><span style="--i:18;--h1:24px;--h2:122px"></span><span style="--i:19;--h1:39px;--h2:141px"></span><span style="--i:20;--h1:54px;--h2:160px"></span><span style="--i:21;--h1:69px;--h2:46px"></span><span style="--i:22;--h1:84px;--h2:65px"></span><span style="--i:23;--h1:99px;--h2:84px"></span><span style="--i:24;--h1:114px;--h2:103px"></span><span style="--i:25;--h1:129px;--h2:122px"></span><span style="--i:26;--h1:144px;--h2:141px"></span><span style="--i:27;--h1:24px;--h2:160px"></span></div>
       <h2 id="artistName"></h2>
       <div class="artist-sub" id="artistSubtitle"></div>
       <p class="artist-desc" id="artistDescription"></p>
@@ -5167,11 +4869,6 @@ const artistTracks = document.getElementById('artistTracks');
 let currentSrc = '';
 let currentTrackList = [];
 let currentTrackIndex = -1;
-let altAudioContext = null;
-let altAnalyser = null;
-let altAnalyserData = null;
-let altSourceCreated = false;
-let altSpectrumFrame = 0;
 
 function formatTime(seconds){
   const safe = Math.max(0, Math.min(PREVIEW_LIMIT, seconds || 0));
@@ -5200,29 +4897,12 @@ function syncPlayer(){
   });
 }
 
-function setupAltSpectrum(){
-  return;
-}
-
-function resetAltSpectrum(){
-  return;
-}
-
-function renderAltSpectrum(){
-  altSpectrumFrame = 0;
-}
-
-function startAltSpectrum(){
-  return;
-}
-
 function playNextTrack(){
   const nextIndex = currentTrackIndex + 1;
   if (!currentTrackList.length || nextIndex >= currentTrackList.length) {
     audio.pause();
     audio.currentTime = PREVIEW_LIMIT;
-    syncPlayer();
-    resetAltSpectrum();
+    syncPlayer();
     return;
   }
   const [title, src] = currentTrackList[nextIndex];
@@ -5254,8 +4934,7 @@ function playPreviousTrack(){
 
 function stopTrack(){
   audio.pause();
-  audio.currentTime = 0;
-  resetAltSpectrum();
+  audio.currentTime = 0;
   syncPlayer();
 }
 
@@ -5307,8 +4986,7 @@ function playTrack(track){
 
   if (currentSrc === track.src && !audio.paused) {
     audio.pause();
-    syncPlayer();
-    resetAltSpectrum();
+    syncPlayer();
     return;
   }
 
@@ -5323,8 +5001,7 @@ function playTrack(track){
   document.querySelectorAll('[data-play]').forEach((button) => {
     if (button.dataset.src === track.src) button.classList.add('active');
   });
-  audio.play().catch(syncPlayer);
-  startAltSpectrum();
+  audio.play().catch(syncPlayer);
   syncPlayer();
 }
 
@@ -5391,11 +5068,9 @@ modal.addEventListener('click', (event) => {
 playerToggle.addEventListener('click', () => {
   if (!currentSrc) return;
   if (audio.paused) {
-    audio.play().catch(syncPlayer);
-    startAltSpectrum();
+    audio.play().catch(syncPlayer);
   } else {
-    audio.pause();
-    resetAltSpectrum();
+    audio.pause();
   }
   syncPlayer();
 });
@@ -5415,10 +5090,7 @@ audio.addEventListener('timeupdate', () => {
 });
 ['play','pause','ended','loadedmetadata','stalled','suspend','abort','error'].forEach((name) => {
   audio.addEventListener(name, syncPlayer);
-});
-audio.addEventListener('play', startAltSpectrum);
-audio.addEventListener('pause', resetAltSpectrum);
-audio.addEventListener('ended', resetAltSpectrum);
+});
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) window.setTimeout(syncPlayer, 120);
 });
