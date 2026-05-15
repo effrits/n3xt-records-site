@@ -3380,17 +3380,46 @@ body:has(.artist-modal.open) .cursor-ring{
 }
 
 /* ===== RESTORE VERSION ALTERNATIVE SPECTRUM ===== */
+.artist-modal .artist-info{
+  position:relative !important;
+  isolation:isolate !important;
+}
+
+.artist-modal .artist-info::before{
+  content:'' !important;
+  position:fixed !important;
+  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 40px) !important;
+  right:calc(max(48px, (100vw - 1180px) / 2) - 40px) !important;
+  top:calc(108px + env(safe-area-inset-top)) !important;
+  height:min(390px, 58vh) !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+  background:
+    radial-gradient(circle at 68% 40%, rgba(200,244,0,.11), transparent 48%),
+    linear-gradient(180deg, rgba(255,45,85,.09), rgba(5,5,5,0) 78%) !important;
+  opacity:.78 !important;
+}
+
+.artist-modal .artist-info > :not(.spectrum){
+  position:relative !important;
+  z-index:1 !important;
+}
+
 .artist-modal .spectrum{
-  position:sticky !important;
-  top:102px !important;
-  height:210px !important;
-  margin-bottom:-150px !important;
+  position:fixed !important;
+  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 64px - 34px) !important;
+  right:calc(max(48px, (100vw - 1180px) / 2) - 34px) !important;
+  top:calc(112px + env(safe-area-inset-top)) !important;
+  height:min(360px, 54vh) !important;
+  margin:0 !important;
   display:flex !important;
   align-items:end !important;
   gap:5px !important;
-  opacity:.36 !important;
+  opacity:.42 !important;
   pointer-events:none !important;
-  filter:drop-shadow(0 0 12px rgba(255,45,85,.25)) !important;
+  z-index:0 !important;
+  filter:drop-shadow(0 0 18px rgba(200,244,0,.12)) !important;
+  mix-blend-mode:screen !important;
 }
 
 .artist-modal .spectrum span{
@@ -3403,14 +3432,23 @@ body:has(.artist-modal.open) .cursor-ring{
 }
 
 @media(max-width:900px){
+  .artist-modal .artist-info::before{
+    position:fixed !important;
+    left:-20px !important;
+    right:-20px !important;
+    top:calc(92px + env(safe-area-inset-top)) !important;
+    height:300px !important;
+    opacity:.62 !important;
+  }
+
   .artist-modal .spectrum{
     position:fixed !important;
-    left:18px !important;
-    right:18px !important;
+    left:-18px !important;
+    right:-18px !important;
     top:96px !important;
-    height:150px !important;
+    height:270px !important;
     margin:0 !important;
-    opacity:.22 !important;
+    opacity:.36 !important;
   }
 }
 
