@@ -3395,12 +3395,31 @@ body:has(.artist-modal.open) .cursor-ring{
   transition:height .08s linear, opacity .08s linear !important;
 }
 
-.spectrum span:nth-child(6n+1){background:linear-gradient(to top, rgba(255,45,85,.28), rgba(255,45,85,.9)) !important;}
-.spectrum span:nth-child(6n+2){background:linear-gradient(to top, rgba(200,244,0,.28), rgba(200,244,0,.9)) !important;}
-.spectrum span:nth-child(6n+3){background:linear-gradient(to top, rgba(0,240,255,.24), rgba(0,240,255,.82)) !important;}
-.spectrum span:nth-child(6n+4){background:linear-gradient(to top, rgba(255,176,72,.24), rgba(255,176,72,.86)) !important;}
-.spectrum span:nth-child(6n+5){background:linear-gradient(to top, rgba(173,91,255,.22), rgba(173,91,255,.82)) !important;}
-.spectrum span:nth-child(6n){background:linear-gradient(to top, rgba(240,237,230,.18), rgba(240,237,230,.72)) !important;}
+.player-controls{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.player-controls button{
+  width:34px !important;
+  height:34px !important;
+  border-radius:50%;
+  border:1px solid rgba(200,244,0,.45) !important;
+  background:rgba(5,5,5,.24) !important;
+  color:var(--acid) !important;
+  font-family:"Space Mono",monospace;
+  font-size:.74rem;
+  line-height:1;
+}
+
+.player-controls #playerToggle{
+  width:42px !important;
+  height:42px !important;
+  background:var(--acid) !important;
+  color:#050505 !important;
+  font-weight:700;
+}
 
 </style>
 </head>
@@ -5072,7 +5091,12 @@ body:has(.artist-modal.open) .cursor-ring{
 
 
 <div class="player" id="player">
-  <button type="button" id="playerToggle" aria-label="Lecture">▶</button>
+  <div class="player-controls">
+    <button type="button" id="playerPrev" aria-label="Morceau précédent">‹</button>
+    <button type="button" id="playerToggle" aria-label="Lecture">▶</button>
+    <button type="button" id="playerStop" aria-label="Stop">■</button>
+    <button type="button" id="playerNext" aria-label="Morceau suivant">›</button>
+  </div>
   <div>
     <div class="player-title" id="playerTitle">Aucune preview</div>
     <div class="player-meta" id="playerMeta">Choisis un morceau</div>
@@ -5089,6 +5113,9 @@ const PREVIEW_LIMIT = 71;
 
 const audio = document.getElementById('audio');
 const playerToggle = document.getElementById('playerToggle');
+const playerPrev = document.getElementById('playerPrev');
+const playerStop = document.getElementById('playerStop');
+const playerNext = document.getElementById('playerNext');
 const playerTitle = document.getElementById('playerTitle');
 const playerMeta = document.getElementById('playerMeta');
 const playerTime = document.getElementById('playerTime');
@@ -5129,6 +5156,12 @@ function syncPlayer(){
   playerProgress.style.width = ((current / PREVIEW_LIMIT) * 100) + '%';
   document.querySelectorAll('[data-play].active').forEach((button) => {
     if (button.dataset.src !== currentSrc || audio.paused) button.classList.remove('active');
+  });
+  document.querySelectorAll('[data-play]').forEach((button) => {
+    const icon = button.querySelector('.play');
+    const isPlaying = button.dataset.src === currentSrc && !audio.paused;
+    button.classList.toggle('active', isPlaying);
+    if (icon) icon.textContent = isPlaying ? 'Ⅱ' : '▶';
   });
 }
 
@@ -5212,6 +5245,71 @@ function playNextTrack(){
   });
 }
 
+function playPreviousTrack(){
+  const previousIndex = currentTrackIndex - 1;
+  if (!currentTrackList.length || previousIndex < 0) {
+    audio.currentTime = 0;
+    syncPlayer();
+    return;
+  }
+  const [title, src] = currentTrackList[previousIndex];
+  playTrack({
+    artist: playerMeta.textContent.split(' - ')[0] || artistName.textContent || 'N3XT',
+    title,
+    src,
+    index: previousIndex,
+    list: currentTrackList,
+  });
+}
+
+function stopTrack(){
+  audio.pause();
+  audio.currentTime = 0;
+  resetAltSpectrum();
+  syncPlayer();
+}
+
+function seekPreview(delta){
+  if (!currentSrc) return;
+  audio.currentTime = Math.max(0, Math.min(PREVIEW_LIMIT, (audio.currentTime || 0) + delta));
+  syncPlayer();
+}
+
+function bindHoldControl(button, clickAction, holdAction){
+  if (!button) return;
+  let holdTimer = 0;
+  let holdInterval = 0;
+  let held = false;
+
+  function clearHold(){
+    window.clearTimeout(holdTimer);
+    window.clearInterval(holdInterval);
+    holdTimer = 0;
+    holdInterval = 0;
+  }
+
+  button.addEventListener('pointerdown', (event) => {
+    event.preventDefault();
+    held = false;
+    button.setPointerCapture?.(event.pointerId);
+    holdTimer = window.setTimeout(() => {
+      held = true;
+      holdAction();
+      holdInterval = window.setInterval(holdAction, 140);
+    }, 360);
+  });
+
+  button.addEventListener('pointerup', (event) => {
+    event.preventDefault();
+    button.releasePointerCapture?.(event.pointerId);
+    clearHold();
+    if (!held) clickAction();
+  });
+
+  button.addEventListener('pointercancel', clearHold);
+  button.addEventListener('lostpointercapture', clearHold);
+}
+
 function playTrack(track){
   if (!track.src) return;
   if (track.list) currentTrackList = track.list;
@@ -5283,6 +5381,8 @@ document.addEventListener('click', (event) => {
 
   const playButton = event.target.closest('[data-play]');
   if (playButton) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
     playTrack({
       artist: playButton.dataset.artist,
       title: playButton.dataset.title,
@@ -5309,6 +5409,12 @@ playerToggle.addEventListener('click', () => {
   }
   syncPlayer();
 });
+
+bindHoldControl(playerPrev, playPreviousTrack, () => seekPreview(-4));
+bindHoldControl(playerNext, playNextTrack, () => seekPreview(4));
+if (playerStop) {
+  playerStop.addEventListener('click', stopTrack);
+}
 
 audio.addEventListener('timeupdate', () => {
   if (!audio.paused && audio.currentTime >= PREVIEW_LIMIT) {
