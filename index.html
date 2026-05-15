@@ -3271,15 +3271,6 @@ body:has(.artist-modal.open) .cursor-ring{
     padding-top:0 !important;
   }
 
-  .artist-modal.open .spectrum{
-    position:relative !important;
-    top:auto !important;
-    height:116px !important;
-    margin:6px 0 -78px !important;
-    opacity:.3 !important;
-    z-index:0 !important;
-  }
-
   .artist-modal.open .artist-info h2{
     font-size:clamp(4rem,22vw,6.6rem) !important;
     line-height:.82 !important;
@@ -3388,21 +3379,8 @@ body:has(.artist-modal.open) .cursor-ring{
   }
 }
 
-/* ===== MUSIC-REACTIVE SPECTRUM ONLY ===== */
-.spectrum span{
-  animation:none !important;
-  height:var(--h1) !important;
-  background:linear-gradient(to top,rgba(255,45,85,.3),rgba(200,244,0,.9)) !important;
-  transition:opacity .12s linear !important;
-}
-
-body.spectrum-playing .artist-modal.open .spectrum span{
-  animation:sbar 1.7s ease-in-out infinite !important;
-  animation-delay:calc(var(--i) * -70ms) !important;
-}
-
 /* ===== RESTORE VERSION ALTERNATIVE SPECTRUM ===== */
-.artist-modal.open .spectrum{
+.artist-modal .spectrum{
   position:sticky !important;
   top:102px !important;
   height:210px !important;
@@ -3415,7 +3393,7 @@ body.spectrum-playing .artist-modal.open .spectrum span{
   filter:drop-shadow(0 0 12px rgba(255,45,85,.25)) !important;
 }
 
-.artist-modal.open .spectrum span{
+.artist-modal .spectrum span{
   flex:1 !important;
   min-width:3px !important;
   height:var(--h1) !important;
@@ -3425,7 +3403,7 @@ body.spectrum-playing .artist-modal.open .spectrum span{
 }
 
 @media(max-width:900px){
-  .artist-modal.open .spectrum{
+  .artist-modal .spectrum{
     position:fixed !important;
     left:18px !important;
     right:18px !important;
@@ -5189,7 +5167,7 @@ function setupAltSpectrum(){
 }
 
 function resetAltSpectrum(){
-  document.body.classList.remove('spectrum-playing');
+  return;
 }
 
 function renderAltSpectrum(){
@@ -5197,9 +5175,7 @@ function renderAltSpectrum(){
 }
 
 function startAltSpectrum(){
-  if (!audio.paused && currentSrc) {
-    document.body.classList.add('spectrum-playing');
-  }
+  return;
 }
 
 function playNextTrack(){
