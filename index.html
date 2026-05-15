@@ -3401,6 +3401,85 @@ body.spectrum-playing .artist-modal.open .spectrum span{
   animation-delay:calc(var(--i) * -70ms) !important;
 }
 
+.artist-modal.open .artist-info{
+  position:relative !important;
+  isolation:isolate !important;
+}
+
+.artist-modal.open .artist-info::before{
+  content:"" !important;
+  position:fixed !important;
+  left:calc(max(48px, (100vw - 1180px) / 2) + min(430px, 32vw) + 28px) !important;
+  right:calc(max(48px, (100vw - 1180px) / 2) - 18px) !important;
+  top:calc(236px + env(safe-area-inset-top)) !important;
+  height:155px !important;
+  opacity:.42 !important;
+  pointer-events:none !important;
+  z-index:-1 !important;
+  filter:drop-shadow(0 0 18px rgba(200,244,0,.12)) !important;
+  mix-blend-mode:screen !important;
+  background:
+    linear-gradient(90deg,
+      rgba(255,45,85,.22) 0 3%,
+      transparent 3% 4.7%,
+      rgba(255,45,85,.34) 4.7% 7.7%,
+      transparent 7.7% 9.4%,
+      rgba(255,45,85,.48) 9.4% 12.4%,
+      transparent 12.4% 14.1%,
+      rgba(255,45,85,.56) 14.1% 17.1%,
+      transparent 17.1% 18.8%,
+      rgba(255,45,85,.62) 18.8% 21.8%,
+      transparent 21.8% 23.5%,
+      rgba(255,45,85,.52) 23.5% 26.5%,
+      transparent 26.5% 28.2%,
+      rgba(255,45,85,.38) 28.2% 31.2%,
+      transparent 31.2% 37%,
+      rgba(200,244,0,.18) 37% 40%,
+      transparent 40% 42%,
+      rgba(200,244,0,.32) 42% 45%,
+      transparent 45% 47%,
+      rgba(200,244,0,.44) 47% 50%,
+      transparent 50% 52%,
+      rgba(200,244,0,.34) 52% 55%,
+      transparent 55% 64%,
+      rgba(255,45,85,.24) 64% 67%,
+      transparent 67% 69%,
+      rgba(255,45,85,.4) 69% 72%,
+      transparent 72% 74%,
+      rgba(255,45,85,.58) 74% 77%,
+      transparent 77% 79%,
+      rgba(255,45,85,.62) 79% 82%,
+      transparent 82% 84%,
+      rgba(255,45,85,.5) 84% 87%,
+      transparent 87% 89%,
+      rgba(255,45,85,.36) 89% 92%,
+      transparent 92% 100%) !important;
+  clip-path:polygon(
+    0 44%, 3% 38%, 6% 32%, 9% 27%, 12% 24%, 15% 27%,
+    18% 34%, 21% 44%, 24% 55%, 27% 64%, 30% 69%,
+    35% 69%, 39% 62%, 43% 50%, 47% 39%, 51% 35%,
+    55% 42%, 59% 54%, 63% 63%, 67% 66%, 70% 57%,
+    73% 43%, 76% 30%, 79% 24%, 82% 26%, 85% 36%,
+    88% 50%, 91% 61%, 94% 66%, 100% 58%,
+    100% 88%, 94% 82%, 91% 77%, 88% 66%, 85% 52%,
+    82% 42%, 79% 40%, 76% 46%, 73% 59%, 70% 73%,
+    67% 82%, 63% 79%, 59% 70%, 55% 58%, 51% 51%,
+    47% 55%, 43% 66%, 39% 78%, 35% 85%, 30% 85%,
+    27% 80%, 24% 71%, 21% 60%, 18% 50%, 15% 43%,
+    12% 40%, 9% 43%, 6% 48%, 3% 54%, 0 60%
+  ) !important;
+}
+
+@media(max-width:900px){
+  .artist-modal.open .artist-info::before{
+    left:-18px !important;
+    right:-18px !important;
+    top:calc(420px + env(safe-area-inset-top)) !important;
+    height:130px !important;
+    opacity:.34 !important;
+  }
+}
+
 .player-controls{
   display:flex;
   align-items:center;
