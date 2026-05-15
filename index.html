@@ -3388,6 +3388,20 @@ body:has(.artist-modal.open) .cursor-ring{
   }
 }
 
+/* ===== MUSIC-REACTIVE SPECTRUM ONLY ===== */
+.spectrum span{
+  animation:none !important;
+  height:var(--level, var(--h1)) !important;
+  transition:height .08s linear, opacity .08s linear !important;
+}
+
+.spectrum span:nth-child(6n+1){background:linear-gradient(to top, rgba(255,45,85,.28), rgba(255,45,85,.9)) !important;}
+.spectrum span:nth-child(6n+2){background:linear-gradient(to top, rgba(200,244,0,.28), rgba(200,244,0,.9)) !important;}
+.spectrum span:nth-child(6n+3){background:linear-gradient(to top, rgba(0,240,255,.24), rgba(0,240,255,.82)) !important;}
+.spectrum span:nth-child(6n+4){background:linear-gradient(to top, rgba(255,176,72,.24), rgba(255,176,72,.86)) !important;}
+.spectrum span:nth-child(6n+5){background:linear-gradient(to top, rgba(173,91,255,.22), rgba(173,91,255,.82)) !important;}
+.spectrum span:nth-child(6n){background:linear-gradient(to top, rgba(240,237,230,.18), rgba(240,237,230,.72)) !important;}
+
 </style>
 </head>
 <body>
@@ -4719,7 +4733,7 @@ body:has(.artist-modal.open) .cursor-ring{
       }
     }else{
       for(let i = 0; i < BAR_COUNT; i++){
-        values[i] = .18 + Math.abs(Math.sin(time * .0014 + i * .42)) * .42;
+        values[i] = .08;
       }
     }
 
@@ -4753,7 +4767,11 @@ body:has(.artist-modal.open) .cursor-ring{
       }
     });
 
-    raf = requestAnimationFrame(drawSpectrum);
+    if(audio && !audio.paused){
+      raf = requestAnimationFrame(drawSpectrum);
+    }else{
+      raf = 0;
+    }
   }
 
   function startSpectrum(){
@@ -4785,6 +4803,24 @@ body:has(.artist-modal.open) .cursor-ring{
     audio.play().catch(syncUI);
     startSpectrum();
     syncUI();
+  }
+
+  function playNextPreview(){
+    const rows = Array.from(document.querySelectorAll('.artist-page-modal.open .track-row[data-audio]'));
+    const index = rows.findIndex(function(row){
+      return row.getAttribute('data-audio') === currentSrc;
+    });
+    const next = index >= 0 ? rows[index + 1] : null;
+    if(!next){
+      const audio = getAudio();
+      if(audio){
+        audio.pause();
+        audio.currentTime = PREVIEW_LIMIT;
+      }
+      syncUI();
+      return;
+    }
+    playPreview(next.getAttribute('data-audio'), next.getAttribute('data-title') || 'Preview');
   }
 
   document.addEventListener('DOMContentLoaded', function(){
@@ -4843,9 +4879,9 @@ body:has(.artist-modal.open) .cursor-ring{
     }
 
     audio.addEventListener('timeupdate', function(){
-      if(audio.currentTime >= PREVIEW_LIMIT){
-        audio.pause();
-        audio.currentTime = PREVIEW_LIMIT;
+      if(!audio.paused && audio.currentTime >= PREVIEW_LIMIT){
+        playNextPreview();
+        return;
       }
       syncUI();
     });
@@ -5067,6 +5103,13 @@ const artistYear = document.getElementById('artistYear');
 const artistStyle = document.getElementById('artistStyle');
 const artistTracks = document.getElementById('artistTracks');
 let currentSrc = '';
+let currentTrackList = [];
+let currentTrackIndex = -1;
+let altAudioContext = null;
+let altAnalyser = null;
+let altAnalyserData = null;
+let altSourceCreated = false;
+let altSpectrumFrame = 0;
 
 function formatTime(seconds){
   const safe = Math.max(0, Math.min(PREVIEW_LIMIT, seconds || 0));
@@ -5089,8 +5132,98 @@ function syncPlayer(){
   });
 }
 
+function setupAltSpectrum(){
+  if (altSourceCreated) return;
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    altAudioContext = new AudioContextClass();
+    altAnalyser = altAudioContext.createAnalyser();
+    altAnalyser.fftSize = 128;
+    altAnalyser.smoothingTimeConstant = .78;
+    altAnalyserData = new Uint8Array(altAnalyser.frequencyBinCount);
+    const source = altAudioContext.createMediaElementSource(audio);
+    source.connect(altAnalyser);
+    altAnalyser.connect(altAudioContext.destination);
+    altSourceCreated = true;
+  } catch (error) {
+    altAnalyser = null;
+    altAnalyserData = null;
+  }
+}
+
+function resetAltSpectrum(){
+  document.querySelectorAll('.spectrum span').forEach((bar) => {
+    bar.style.setProperty('--level', bar.style.getPropertyValue('--h1') || '24px');
+  });
+}
+
+function renderAltSpectrum(){
+  const bars = document.querySelectorAll('.spectrum span');
+  if (!bars.length || audio.paused || !currentSrc) {
+    altSpectrumFrame = 0;
+    resetAltSpectrum();
+    return;
+  }
+
+  if (altAnalyser && altAnalyserData) {
+    altAnalyser.getByteFrequencyData(altAnalyserData);
+  }
+
+  bars.forEach((bar, index) => {
+    const base = parseFloat(bar.style.getPropertyValue('--h1')) || 24;
+    const peak = parseFloat(bar.style.getPropertyValue('--h2')) || 96;
+    let level = .18;
+    if (altAnalyser && altAnalyserData) {
+      const dataIndex = Math.min(altAnalyserData.length - 1, Math.floor(index * altAnalyserData.length / bars.length));
+      level = altAnalyserData[dataIndex] / 255;
+    }
+    const height = base + (peak - base) * Math.max(.08, level);
+    bar.style.setProperty('--level', height.toFixed(1) + 'px');
+  });
+
+  altSpectrumFrame = requestAnimationFrame(renderAltSpectrum);
+}
+
+function startAltSpectrum(){
+  setupAltSpectrum();
+  if (altAudioContext && altAudioContext.state === 'suspended') {
+    altAudioContext.resume();
+  }
+  if (!altSpectrumFrame) altSpectrumFrame = requestAnimationFrame(renderAltSpectrum);
+}
+
+function playNextTrack(){
+  const nextIndex = currentTrackIndex + 1;
+  if (!currentTrackList.length || nextIndex >= currentTrackList.length) {
+    audio.pause();
+    audio.currentTime = PREVIEW_LIMIT;
+    syncPlayer();
+    resetAltSpectrum();
+    return;
+  }
+  const [title, src] = currentTrackList[nextIndex];
+  playTrack({
+    artist: playerMeta.textContent.split(' - ')[0] || artistName.textContent || 'N3XT',
+    title,
+    src,
+    index: nextIndex,
+    list: currentTrackList,
+  });
+}
+
 function playTrack(track){
   if (!track.src) return;
+  if (track.list) currentTrackList = track.list;
+  if (Number.isInteger(track.index)) currentTrackIndex = track.index;
+
+  if (currentSrc === track.src && !audio.paused) {
+    audio.pause();
+    syncPlayer();
+    resetAltSpectrum();
+    return;
+  }
+
   if (currentSrc !== track.src) {
     currentSrc = track.src;
     audio.src = track.src;
@@ -5103,6 +5236,7 @@ function playTrack(track){
     if (button.dataset.src === track.src) button.classList.add('active');
   });
   audio.play().catch(syncPlayer);
+  startAltSpectrum();
   syncPlayer();
 }
 
@@ -5117,8 +5251,10 @@ function openArtist(id){
   artistAlbum.textContent = artist.album;
   artistYear.textContent = artist.year;
   artistStyle.textContent = artist.style;
+  currentTrackList = artist.tracks;
+  currentTrackIndex = -1;
   artistTracks.innerHTML = artist.tracks.map(([title, src], index) => `
-    <button class="track-row" type="button" data-play data-artist="${artist.name}" data-title="${title}" data-src="${src}">
+    <button class="track-row" type="button" data-play data-artist="${artist.name}" data-title="${title}" data-src="${src}" data-index="${index}">
       <span class="num">${String(index + 1).padStart(2, '0')}</span>
       <span class="play">▶</span>
       <span class="track-name">${title}</span>
@@ -5151,6 +5287,8 @@ document.addEventListener('click', (event) => {
       artist: playButton.dataset.artist,
       title: playButton.dataset.title,
       src: playButton.dataset.src,
+      index: Number(playButton.dataset.index),
+      list: currentTrackList,
     });
   }
 });
@@ -5162,15 +5300,20 @@ modal.addEventListener('click', (event) => {
 
 playerToggle.addEventListener('click', () => {
   if (!currentSrc) return;
-  if (audio.paused) audio.play().catch(syncPlayer);
-  else audio.pause();
+  if (audio.paused) {
+    audio.play().catch(syncPlayer);
+    startAltSpectrum();
+  } else {
+    audio.pause();
+    resetAltSpectrum();
+  }
   syncPlayer();
 });
 
 audio.addEventListener('timeupdate', () => {
-  if (audio.currentTime >= PREVIEW_LIMIT) {
-    audio.pause();
-    audio.currentTime = PREVIEW_LIMIT;
+  if (!audio.paused && audio.currentTime >= PREVIEW_LIMIT) {
+    playNextTrack();
+    return;
   }
   syncPlayer();
 });
